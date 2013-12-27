@@ -125,6 +125,16 @@ NSUInteger digitsCount(NSInteger i) {
 	
 }
 
+- (id)init
+{
+	self = [super init];
+	client = @"";
+	project = @"";
+	description = @"";
+	date = [NSDate date];
+	return self;
+}
+
 #pragma mark Accessors
 
 - (void)setProject:(NSString *)aProjectTitle
