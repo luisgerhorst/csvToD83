@@ -12,7 +12,7 @@ Um konvertiert werden zu können muss die CSV-Datei einen bestimmten Aufbau habe
 Die Datei muss aus fünf Spalten bestehen.
 
 Ordnungszahl | Text | Menge | Einheit | Art
----          |
+---          | ---  | ---   | ---     | ---
 ...          | ...  | ...   | ...     | ...
 
 Lehrzeilen werden ignoriert.
@@ -20,7 +20,7 @@ Lehrzeilen werden ignoriert.
 ### LV-Gruppen
 
 Ordnungszahl | Text | Menge | Einheit | Art
----          |
+---          | ---  | ---   | ---     | ---
 1.           | Bezeichnung der LV-Gruppe |
 
 __Ordnungszahl:__ Muss mit Punkt enden
@@ -30,8 +30,8 @@ Menge, Einheit und Art sind lehr.
 ### Teilleistungen
 
 Ordnungszahl | Text | Menge | Einheit | Art
----          |
-1.1          | Kurztext | 2.75 | m2 | BG
+---          | ---  | ---   | ---     | ---
+1.1          | Kurztext | 2.75 | m2   | BG
              | Langtext
              | weitere Zeile des Langtextes
 
