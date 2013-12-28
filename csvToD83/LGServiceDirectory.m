@@ -63,8 +63,6 @@ NSUInteger digitsCount(NSInteger i) {
 	
 	NSArray *array = [NSArray arrayWithContentsOfCSVFile:csvFilePath];
 	
-	// NSLog(@"converted csv to array %@", array);
-	
 	LGStack *stack = [[LGStack alloc] init]; // stack that contains current parent of each node layer
 	[stack push:serviceDirectory];
 	

@@ -23,6 +23,11 @@
  THE SOFTWARE.
  **/
 
+/*
+ Only use for converting CSV files to array!
+ Semicolon is default delimiter
+ */
+
 #import "CHCSVParser.h"
 
 NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
@@ -63,7 +68,7 @@ BOOL delimiterOrNothing(unichar character) {
 
 /*
  Detects the delimiter by finding the character that has the same number of occurrences in each line
- If nothing is detected, comma is returned
+ If nothing is detected or file is too short for detection, comma is returned
  Criticism:
  - only supports comma, semicolon, colon, tab and space as delimiter
  - works bad with small files
@@ -71,6 +76,8 @@ BOOL delimiterOrNothing(unichar character) {
  - loads whole file into memory
  */
 unichar detectDelimiterOfCSVString(NSString *content) {
+	
+	#define DEFAULT_DELIMITER SEMICOLON
 	
 	#define COMMA_STR @","
 	#define SEMICOLON_STR @";"
@@ -81,7 +88,7 @@ unichar detectDelimiterOfCSVString(NSString *content) {
 	
 	NSArray *lines = [content componentsSeparatedByString:@"\n"];
 	
-	if ([lines count] < 2) return COMMA; // skip detection if file is too short, then use comma
+	if ([lines count] < 2) return DEFAULT_DELIMITER; // skip detection if file is too short, then use comma
 	
 	// count per line:
 	
@@ -166,7 +173,7 @@ unichar detectDelimiterOfCSVString(NSString *content) {
 	
 	// choose delimiter:
 	
-	unichar detectedDelimiter = COMMA;
+	unichar detectedDelimiter = DEFAULT_DELIMITER;
 	for (NSString *delimiter in possibleCounts) {
 		NSNumber *count = possibleCounts[delimiter];
 		if (![count isKindOfClass:[NSNull class]] && ![count isEqualToNumber:@0]) { // not NSNull and not @0
@@ -178,7 +185,7 @@ unichar detectDelimiterOfCSVString(NSString *content) {
 		}
 	}
 	
-	NSLog(@"CSV Delimiter detected: %c", detectedDelimiter);
+	// NSLog(@"CSV Delimiter detected: %c", detectedDelimiter);
 	
 	return detectedDelimiter;
 	
