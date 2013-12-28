@@ -49,15 +49,15 @@ int main(int argc, const char *argv[]) {
 	@autoreleasepool {
 		
 		if (argc != 2) { // invalid args
-			fprintf(stderr, "Benutzung: csvToD83 <Name der CSV Datei mit Dateiendung>");
+			fprintf(stderr, "Benutzung: csvToD83 <Name der CSV Datei>");
 			return 1;
 		}
-		
-		LGWrite(@"CSV Datei wird eingelesen ...");
 		
 		// read from ...
 		NSString *csvPath = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
 		if ([csvPath length] < 5 || ![[csvPath substringWithRange:NSMakeRange([csvPath length] - 4, 4)] isCaseInsensitiveLike:@".csv"]) csvPath = [csvPath stringByAppendingString:@".csv"]; // add extension if needed
+		
+		LGWrite([NSString stringWithFormat:@"CSV Datei %@ wird eingelesen ...", csvPath]);
 		
 		LGServiceDirectory *sd = [LGServiceDirectory serviceDirectoryWithContentsOfCSVFile:csvPath];
 		LGWrite(@"Datei erfolgreich eingelesen, im Folgenden können Sie das LV mit weiteren Informationen ergänzen.");

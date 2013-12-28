@@ -41,7 +41,6 @@
  */
 - (id)initWithCSVString:(NSString *)kind2String forServiceWithUnit:(NSString *)unit
 {
-	
 	self = [super init];
 	
 	// For enums see LGServiceType.h
@@ -61,7 +60,6 @@
 	if (![self valid]) @throw [NSException exceptionWithName:@"LGServiceTypeInitialization" reason:@"The resulting combination of POSART1, POSART2 and POSTYP is invalid" userInfo:nil];
 	
 	return self;
-	
 }
 
 /*
@@ -136,61 +134,9 @@
 	return combination;
 }
 
-// todo: remove duplicated code
 - (NSString *)description
 {
-	
-	NSString *k1S; // kind1String
-	switch (kind1) {
-		case LGServiceType_KIND1_N:
-			k1S = @"N";
-			break;
-		case LGServiceType_KIND1_G:
-			k1S = @"G";
-			break;
-		case LGServiceType_KIND1_A:
-			k1S = @"A";
-			break;
-		case LGServiceType_KIND1_S:
-			k1S = @"S";
-			break;
-		default:
-			break;
-	}
-	
-	NSString *k2S; // kind2String
-	switch (kind2) {
-		case LGServiceType_KIND2_N:
-			k2S = @"N";
-			break;
-		case LGServiceType_KIND2_E:
-			k2S = @"E";
-			break;
-		case LGServiceType_KIND2_M:
-			k2S = @"M";
-			break;
-		default:
-			break;
-	}
-	
-	NSString *tS; // typeString
-	switch (type) {
-		case LGServiceType_TYPE_N:
-			tS = @"N";
-			break;
-		case LGServiceType_TYPE_L:
-			tS = @"L";
-			break;
-		default:
-			break;
-	}
-	
-	NSMutableString *combination = [[NSMutableString alloc] initWithString:k1S];
-	[combination appendString:k2S];
-	[combination appendString:tS];
-	
-	return combination;
-	
+	return [self d83Data787980];
 }
 
 @end

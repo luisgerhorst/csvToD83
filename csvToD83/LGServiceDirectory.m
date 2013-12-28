@@ -78,8 +78,6 @@ NSUInteger digitsCount(NSInteger i) {
 		if (ordinalNumber &&
 			[ordinalNumber forGroup]) {
 			
-			// NSLog(@"group found, ordinal number string is '%@' (for group: %hhd)", [line objectAtIndex:0], [ordinalNumber forGroup]);
-			
 			LGServiceGroup *group = [[LGServiceGroup alloc] initWithTitle:[line objectAtIndex:1]];
 			
 			NSUInteger toPop = [stack heigth] - [ordinalNumber depth];
@@ -90,8 +88,6 @@ NSUInteger digitsCount(NSInteger i) {
 		// Service:
 		} else if (ordinalNumber &&
 				   ![ordinalNumber forGroup]) {
-			
-			// NSLog(@"service start found, ordinal number string is '%@'", [line objectAtIndex:0]);
 			
 			LGService *service = [[LGService alloc] initWithTitle:[line objectAtIndex:1] ofQuantity:[[line objectAtIndex:2] floatValue] inUnit:[line objectAtIndex:3] withCSVTypeString:[line objectAtIndex:4]];
 			
@@ -105,19 +101,11 @@ NSUInteger digitsCount(NSInteger i) {
 				   isEmpty([line objectAtIndex:0]) &&
 				   !isEmpty([line objectAtIndex:1])) {
 			
-			// NSLog(@"service text chunk %@ found in %@", [line objectAtIndex:1], line);
 			[[stack objectOnTop] appendTextChunk:[line objectAtIndex:1]];
-			
-		// Nothing:
-		} else {
-			
-			// NSLog(@"No information found in line %@", line);
-			
+		
 		}
 		
 	}
-	
-	// // NSLog(@"ServiceDirectory created:\n%@", serviceDirectory);
 	
 	if (![serviceDirectory layersValid]) @throw [NSException exceptionWithName:@"LGInvalidLayers" reason:@"Each service must have the same number of parent layers" userInfo:nil];
 	
@@ -135,7 +123,7 @@ NSUInteger digitsCount(NSInteger i) {
 	return self;
 }
 
-#pragma mark Accessors
+// Accessors
 
 - (void)setProject:(NSString *)aProjectTitle
 {
@@ -157,14 +145,12 @@ NSUInteger digitsCount(NSInteger i) {
 	date = aDate;
 }
 
-#pragma mark D83
+// D83
 
 - (BOOL)writeToD83File:(NSString *)d83FilePath error:(NSError *__autoreleasing *)error
 {
 	
 	NSString *string = [self d83Value];
-	
-	// NSLog(@"D83 string:\n%@\nEnd d83 stirng", string);
 	
 	NSData *ASCIIData = [string dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 	NSString *ASCIIString = [[NSString alloc] initWithData:ASCIIData encoding:NSASCIIStringEncoding];
@@ -214,8 +200,7 @@ NSUInteger digitsCount(NSInteger i) {
 	return sets;
 }
 
-#pragma mark D83 Sets
-// D83 Sätze als LGSet Objekte
+// Sets
 
 - (LGSet *)d83Set00 // 00 Eröffnungssatz Leistungsverzeichnis
 {
@@ -235,7 +220,7 @@ NSUInteger digitsCount(NSInteger i) {
 	
 	// todo: cut description to avoid error
 	
-	[set setString:description range:NSMakeRange(2, 40)]; // LVBEZ
+	[set setString:description range:NSMakeRange(2,40)]; // LVBEZ
 	
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"dd.MM.YY"];
@@ -251,7 +236,7 @@ NSUInteger digitsCount(NSInteger i) {
 	[set setType:02];
 	
 	// todo: cut project to avoid error
-	[set setString:project range:NSMakeRange(2, 60)]; // PROBEZ
+	[set setString:project range:NSMakeRange(2,60)]; // PROBEZ
 	
 	return set;
 }
@@ -261,8 +246,8 @@ NSUInteger digitsCount(NSInteger i) {
 	LGSet *set = [[LGSet alloc] init];
 	[set setType:03];
 	
-	// todo: cut project to avoid error
-	[set setString:client range:NSMakeRange(2, 60)]; // AGBEZ
+	// todo: cut client to avoid error
+	[set setString:client range:NSMakeRange(2,60)]; // AGBEZ
 	
 	return set;
 }
@@ -272,13 +257,12 @@ NSUInteger digitsCount(NSInteger i) {
 	LGSet *set = [[LGSet alloc] init];
 	[set setType:99];
 	
-	[set setInteger:[self d83Data9] range:NSMakeRange(69, 5)]; // ANZTEIL
+	[set setInteger:[self d83Data9] range:NSMakeRange(69,5)]; // ANZTEIL
 	
 	return set;
 }
 
-#pragma mark D83 Data Elements
-// D83 Datenelemente
+// Data
 
 - (NSString *)d83Data74 // 74 - OZMASKE - Maske zur OZ-Interpretation
 {
@@ -288,7 +272,7 @@ NSUInteger digitsCount(NSInteger i) {
 	 * - array of NSNumbers
 	 */
 	NSArray *maxChildCounts = [super maxChildCounts]; // of NSNumbers
-	NSMutableString *scheme = [NSMutableString stringWithString:@""];
+	NSMutableString *scheme = [NSMutableString string];
 	NSUInteger groupDepth = 1;
 	
 	// Groups
@@ -302,7 +286,7 @@ NSUInteger digitsCount(NSInteger i) {
 	NSUInteger serviceDigits = digitsCount([[maxChildCounts objectAtIndex:[maxChildCounts count] - 2] integerValue]);
 	for (NSUInteger i = 0; i < serviceDigits; i++) [scheme appendString:@"P"];
 	
-	// fill up with zeros
+	// Zeros
 	while ([scheme length] < 9) [scheme appendString:@"0"];
 	
 	// Validate
@@ -317,10 +301,7 @@ NSUInteger digitsCount(NSInteger i) {
 	return [super servicesCount];
 }
 
-#pragma mark Helpers
-// Helper functions extracting information from the structure
-
-# pragma mark Other
+// Other
 
 - (NSString *)description
 {

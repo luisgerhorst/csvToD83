@@ -39,6 +39,7 @@
 	return self;
 }
 
+// used by LGService to make sure no children are appended to them
 - (id)initWithoutChildren
 {
 	self = [super init];
@@ -50,13 +51,10 @@
 	return children;
 }
 
-/*
- existing layers must be complete (all their children must be already added)
- */
+// existing layers must be complete (all their children must be already added)
 - (void)appendChild:(LGNode *)aChild
 {
-	// todo: check if same number of sublayers
-	if ([children count] && ([[children objectAtIndex:0] class] != [aChild class])) @throw [NSException exceptionWithName:@"LGBadAddChildCall" reason:@"Node can only contain objects of same class" userInfo:nil]; // if node already has children, new child must be of the same type
+	if ([children count] && ([[children objectAtIndex:0] class] != [aChild class])) @throw [NSException exceptionWithName:@"LGBadAddChildCall" reason:@"Node can only contain objects of same class" userInfo:nil]; // if node already has children, new child must be of the same type (can't check for layers equality here because new child might not be complete yet)
 	else [children addObject:aChild];
 }
 

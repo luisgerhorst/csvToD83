@@ -44,13 +44,13 @@
 	quantity = aQuantity;
 	unit = aUnit;
 	type = [[LGServiceType alloc] initWithCSVString:typeString forServiceWithUnit:aUnit];
+	text = [NSMutableString string];
 	return self;
 }
 
 - (void)appendTextChunk:(NSString *)textChunk
 {
-	if (!text) text = [NSMutableString stringWithCapacity:[textChunk length]];
-	else [text appendString:@"\n"];
+	if ([text length]) [text appendString:@"\n"];
 	[text appendString:textChunk];
 }
 

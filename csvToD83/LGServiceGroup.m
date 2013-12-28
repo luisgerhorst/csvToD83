@@ -63,7 +63,7 @@
 	// put your own children one layer under you
 	[ordinalNumber layerDown];
 	for (LGNode *child in children) {
-		[ordinalNumber next]; // remeber, each new layer starts at 0
+		[ordinalNumber next]; // remeber: each new layer starts at 0
 		[sets addObjectsFromArray: [child d83SetsWithOrdinalNumber:ordinalNumber]];
 	}
 	[ordinalNumber layerUp];
