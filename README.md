@@ -3,7 +3,7 @@ csvToD83
 
 Command line tool zum konvertieren von Leistungsverzeichnissen im CSV-Format zum D83 Dateiformat.
 
-Alle gängigen Tabellenkalkulationsprogramme unterstützen das exportieren von Tabellen im CSV-Format.
+Alle gängigen Tabellenkalkulationsprogramme unterstützen das exportieren von Tabellen im CSV-Format, die CSV-Datei muss Semikolon ";" als Trenner verwenden (kann in `CHCSVParser.m` Zeile 31 verändert werden).
 
 ## Struktur der CSV-Datei
 

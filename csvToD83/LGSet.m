@@ -52,7 +52,7 @@
  */
 - (void)setString:(NSString *)s range:(NSRange)range // nicht-numerisch, werden mit lehrzeichen aufgefüllt
 {
-	if ([s length] > range.length) @throw [NSException exceptionWithName:@"LGSet_SetStringForRange" reason:@"String is longer than range" userInfo:nil];
+	if ([s length] > range.length) @throw [NSException exceptionWithName:@"LGSet_SetStringForRange" reason:[NSString stringWithFormat:@"String \"%@\" is longer than range {%i,%i}", s, range.location, range.length] userInfo:nil];
 	while ([s length] < range.length) s = [NSString stringWithFormat:@"%@ ", s];
 	[string replaceCharactersInRange:range withString:s];
 }

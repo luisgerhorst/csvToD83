@@ -29,7 +29,7 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
 
 #define CHUNK_SIZE 512
 #define DOUBLE_QUOTE '"'
-#define COMMA ','
+#define COMMA ',' // changed by LG for Klaus Gerhorst
 #define OCTOTHORPE '#'
 #define BACKSLASH '\\'
 
@@ -48,6 +48,146 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
 #define CHCSV_AUTORELEASE(_o) [(_o) autorelease]
 
 #endif
+
+// Following code added by Luis Gerhorst on 13-12-28
+
+// see COMMA upstairs
+#define SEMICOLON ';'
+#define COLON ':'
+#define TAB '\t'
+#define SPACE ' '
+
+BOOL delimiterOrNothing(unichar character) {
+	return character == COMMA || character == SEMICOLON || character == COLON || character == TAB || character == SPACE || character == 0;
+}
+
+/*
+ Detects the delimiter by finding the character that has the same number of occurrences in each line
+ If nothing is detected, comma is returned
+ Criticism:
+ - only supports comma, semicolon, colon, tab and space as delimiter
+ - works bad with small files
+ - not fast
+ - loads whole file into memory
+ */
+unichar detectDelimiterOfCSVString(NSString *content) {
+	
+	#define COMMA_STR @","
+	#define SEMICOLON_STR @";"
+	#define COLON_STR @":"
+	#define TAB_STR @"\t"
+	#define SPACE_STR @" "
+	#define ZERO_NMB @0
+	
+	NSArray *lines = [content componentsSeparatedByString:@"\n"];
+	
+	// count per line:
+	
+	/*
+	 Array of Sets (one per line)
+	 Sets contain number of occurrences of one char in that line with character as key
+	 */
+	NSMutableArray *linesCounts = [NSMutableArray array];
+	
+	for (NSString *line in lines) {
+	
+		NSMutableDictionary *counts = [NSMutableDictionary dictionaryWithDictionary:@{COMMA_STR: ZERO_NMB,
+																					  SEMICOLON_STR: ZERO_NMB,
+																					  COLON_STR: ZERO_NMB,
+																					  TAB_STR: ZERO_NMB,
+																					  SPACE_STR: ZERO_NMB}];
+		BOOL quoteOpened = NO;
+		
+		NSUInteger length = [line length];
+		for (NSUInteger i = 0; i < length; i++) {
+			
+			unichar lastCharacter = i > 0 ? [line characterAtIndex:i-1] : 0;
+			unichar character = [line characterAtIndex:i];
+			unichar nextCharacter = i < length-1 ? [line characterAtIndex:i+1] : 0;
+			
+			if (!quoteOpened && delimiterOrNothing(lastCharacter) && character == DOUBLE_QUOTE) { // opening quote
+				
+				quoteOpened = YES;
+			
+			} else if (quoteOpened && character == DOUBLE_QUOTE && delimiterOrNothing(nextCharacter)) { // closing quote
+				
+				quoteOpened = NO;
+				
+			} else if (!quoteOpened) { // delimiter
+				
+				#define INCREMENT_COUNT(_key) counts[_key] = [NSNumber numberWithUnsignedInteger:[counts[_key] unsignedIntegerValue] + 1]
+				
+				switch (character) {
+					case COMMA:
+						INCREMENT_COUNT(COMMA_STR);
+						break;
+					case SEMICOLON:
+						INCREMENT_COUNT(SEMICOLON_STR);
+						break;
+					case COLON:
+						INCREMENT_COUNT(COLON_STR);
+						break;
+					case TAB:
+						INCREMENT_COUNT(TAB_STR);
+						break;
+					case SPACE:
+						INCREMENT_COUNT(SPACE_STR);
+						break;
+					default:
+						// skip other chars
+						break;
+				}
+				
+			}
+			
+		}
+		
+		[linesCounts addObject:counts];
+		
+	}
+	
+	// detect possible counts:
+	
+	/*
+	 nil at start
+	 value for key is NSNull if invalid
+	 */
+	NSMutableDictionary *possibleCounts = nil;
+	for (NSMutableDictionary *lineCounts in linesCounts) {
+		if (!possibleCounts) // if nothing so far
+			possibleCounts = lineCounts; // use this to start
+		else
+			for (NSString *delimiter in lineCounts) // each delimiter
+				if (![possibleCounts[delimiter] isKindOfClass:[NSNull class]] && ![lineCounts[delimiter] isEqualToNumber:possibleCounts[delimiter]]) // if not excluded yet and is not equal to so far counts
+					possibleCounts[delimiter] = [NSNull null]; // exclude this delimiter
+	}
+	
+	// choose delimiter:
+	
+	unichar detectedDelimiter = COMMA;
+	for (NSString *delimiter in possibleCounts) {
+		NSNumber *count = possibleCounts[delimiter];
+		if (![count isKindOfClass:[NSNull class]] && ![count isEqualToNumber:@0]) { // not NSNull and not @0
+			if ([delimiter isEqualToString:COMMA_STR]) detectedDelimiter = COMMA;
+			if ([delimiter isEqualToString:SEMICOLON_STR]) detectedDelimiter = SEMICOLON;
+			if ([delimiter isEqualToString:COLON_STR]) detectedDelimiter = COLON;
+			if ([delimiter isEqualToString:TAB_STR]) detectedDelimiter = TAB;
+			if ([delimiter isEqualToString:SPACE_STR]) detectedDelimiter = SPACE;
+		}
+	}
+	
+	NSLog(@"CSV Delimiter detected: %c", detectedDelimiter);
+	
+	return detectedDelimiter;
+	
+}
+
+unichar detectDelimiterOfCSVFile(NSString *path) {
+	NSString *content = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+	return detectDelimiterOfCSVString(content);
+}
+
+// End modification by Luis Gerhorst
 
 @interface CHCSVParser ()
 @property (assign) NSUInteger totalBytesRead;
@@ -77,13 +217,13 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
 - (id)initWithCSVString:(NSString *)csv {
     NSStringEncoding encoding = [csv fastestEncoding];
     NSInputStream *stream = [NSInputStream inputStreamWithData:[csv dataUsingEncoding:encoding]];
-    return [self initWithInputStream:stream usedEncoding:&encoding delimiter:COMMA];
+    return [self initWithInputStream:stream usedEncoding:&encoding delimiter:detectDelimiterOfCSVString(csv)]; // changed by Luis Gerhorst
 }
 
 - (id)initWithContentsOfCSVFile:(NSString *)csvFilePath {
     NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:csvFilePath];
     NSStringEncoding encoding = 0;
-    return [self initWithInputStream:stream usedEncoding:&encoding delimiter:COMMA];
+    return [self initWithInputStream:stream usedEncoding:&encoding delimiter:detectDelimiterOfCSVFile(csvFilePath)]; // changed by Luis Gerhorst
 }
 
 - (id)initWithInputStream:(NSInputStream *)stream usedEncoding:(NSStringEncoding *)encoding delimiter:(unichar)delimiter {
@@ -557,7 +697,7 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
 
 - (instancetype)initForWritingToCSVFile:(NSString *)path {
     NSOutputStream *stream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
-    return [self initWithOutputStream:stream encoding:NSUTF8StringEncoding delimiter:COMMA];
+    return [self initWithOutputStream:stream encoding:NSUTF8StringEncoding delimiter:detectDelimiterOfCSVFile(path)]; // changed by Luis Gerhorst
 }
 
 - (instancetype)initWithOutputStream:(NSOutputStream *)stream encoding:(NSStringEncoding)encoding delimiter:(unichar)delimiter {

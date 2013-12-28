@@ -72,6 +72,8 @@ NSUInteger digitsCount(NSInteger i) {
 	
 	for (NSArray *line in array) {
 		
+		if ([line count] < 5) @throw [NSException exceptionWithName:@"LGServiceDirectoryInvalidTableStructure" reason:[NSString stringWithFormat:@"Table must have at least 5 collumns, %@ has not", array] userInfo:nil];
+		
 		LGOrdinalNumber *ordinalNumber = [[LGOrdinalNumber alloc] initWithString:[line objectAtIndex:0]]; // nil if no valid string
 		
 		// ServiceGroup:

@@ -54,7 +54,7 @@
 // existing layers must be complete (all their children must be already added)
 - (void)appendChild:(LGNode *)aChild
 {
-	if ([children count] && ([[children objectAtIndex:0] class] != [aChild class])) @throw [NSException exceptionWithName:@"LGBadAddChildCall" reason:@"Node can only contain objects of same class" userInfo:nil]; // if node already has children, new child must be of the same type (can't check for layers equality here because new child might not be complete yet)
+	if ([children count] && ([[children objectAtIndex:0] class] != [aChild class])) @throw [NSException exceptionWithName:@"LGBadAddChildCall" reason:[NSString stringWithFormat:@"Node %@ can only contain children of class %@ (not %@)", self, [[children objectAtIndex:0] class], [aChild class]] userInfo:nil]; // if node already has children, new child must be of the same type (can't check for layers equality here because new child might not be complete yet)
 	else [children addObject:aChild];
 }
 
