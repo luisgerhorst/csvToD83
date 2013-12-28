@@ -81,6 +81,8 @@ unichar detectDelimiterOfCSVString(NSString *content) {
 	
 	NSArray *lines = [content componentsSeparatedByString:@"\n"];
 	
+	if ([lines count] < 2) return COMMA; // skip detection if file is too short, then use comma
+	
 	// count per line:
 	
 	/*
