@@ -3,9 +3,13 @@ csvToD83
 
 Command line tool zum konvertieren von Leistungsverzeichnissen im CSV-Format zum D83 Dateiformat.
 
+Alle gängigen Tabellenkalkulationsprogramme unterstützen das exportieren von Tabellen im CSV-Format.
+
 ## Struktur der CSV-Datei
 
-Um konvertiert werden zu können muss die CSV-Datei einen bestimmten Aufbau haben. Sie können ihre Tabellen einfach aus z.B. Numbers oder einem anderem Tabellenkalkulationsprogramm im CSV Format exportieren.
+Um konvertiert werden zu können muss die CSV-Datei einen bestimmten Aufbau haben.
+
+Des weiteren sollten Sie Umlaute und sämmtliche andere Zeichen die nicht [ASCII](http://de.wikipedia.org/wiki/American_Standard_Code_for_Information_Interchange)-Zeichensatz enthalten sind vermeiden, da diese beim Speichern im D83-Format umgewandelt werden müssen.
 
 ### Allgemein
 
@@ -44,6 +48,10 @@ Ordnungszahl | Text | Menge | Einheit | Art
 	* kein Inhalt: Normalposition
 	* BG: Bedarfsposition mit Gesamtbetrag
 	* BE: Bedarfsposition ohne Gesamtbetrag
+	
+## Quellen
+
+Bei der Implementierung des D83-Formats wurde auf die [Regelungen für den Datenaustausch Leistungsverzeichnis](http://www.gaeb.de/download/da1990.pdf) (2., geänderte Auflage) von Juni 1990 zurückgegriffen.
 
 
 
