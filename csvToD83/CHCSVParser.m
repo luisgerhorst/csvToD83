@@ -34,7 +34,7 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
 
 #define CHUNK_SIZE 512
 #define DOUBLE_QUOTE '"'
-#define COMMA ',' // changed by LG for Klaus Gerhorst
+// COMMA def downstairs
 #define OCTOTHORPE '#'
 #define BACKSLASH '\\'
 
@@ -56,19 +56,37 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
 
 // Following code added by Luis Gerhorst on 13-12-28
 
-// see COMMA upstairs
+#define COMMA ','
 #define SEMICOLON ';'
 #define COLON ':'
 #define TAB '\t'
 #define SPACE ' '
 
+#define COMMA_STR @","
+#define SEMICOLON_STR @";"
+#define COLON_STR @":"
+#define TAB_STR @"\t"
+#define SPACE_STR @" "
+
+#define DOUBLE_QUOTE_STR @"\""
+
 BOOL delimiterOrNothing(unichar character) {
 	return character == COMMA || character == SEMICOLON || character == COLON || character == TAB || character == SPACE || character == 0;
+}
+
+unichar delimiterStringToCharacter(NSString *s) {
+	if ([s isEqualToString:COMMA_STR]) return COMMA;
+	if ([s isEqualToString:SEMICOLON_STR]) return SEMICOLON;
+	if ([s isEqualToString:COLON_STR]) return COLON;
+	if ([s isEqualToString:TAB_STR]) return TAB;
+	if ([s isEqualToString:SPACE_STR]) return SPACE;
+	return 0; // error!
 }
 
 /*
  Detects the delimiter by finding the character that has the same number of occurrences in each line
  If nothing is detected or file is too short for detection, comma is returned
+ 
  Criticism:
  - only supports comma, semicolon, colon, tab and space as delimiter
  - works bad with small files
@@ -77,13 +95,7 @@ BOOL delimiterOrNothing(unichar character) {
  */
 unichar detectDelimiterOfCSVString(NSString *content) {
 	
-	#define DEFAULT_DELIMITER SEMICOLON
-	
-	#define COMMA_STR @","
-	#define SEMICOLON_STR @";"
-	#define COLON_STR @":"
-	#define TAB_STR @"\t"
-	#define SPACE_STR @" "
+	#define DEFAULT_DELIMITER SEMICOLON // common delimiter in Germany
 	#define ZERO_NMB @0
 	
 	NSArray *lines = [content componentsSeparatedByString:@"\n"];
@@ -142,9 +154,6 @@ unichar detectDelimiterOfCSVString(NSString *content) {
 					case SPACE:
 						INCREMENT_COUNT(SPACE_STR);
 						break;
-					default:
-						// skip other chars
-						break;
 				}
 				
 			}
@@ -171,23 +180,51 @@ unichar detectDelimiterOfCSVString(NSString *content) {
 					possibleCounts[delimiter] = [NSNull null]; // exclude this delimiter
 	}
 	
-	// choose delimiter:
+	// extract possible delimiters:
 	
-	unichar detectedDelimiter = DEFAULT_DELIMITER;
+	NSMutableArray *detectedPossibleDelimiters = [NSMutableArray array];
 	for (NSString *delimiter in possibleCounts) {
 		NSNumber *count = possibleCounts[delimiter];
-		if (![count isKindOfClass:[NSNull class]] && ![count isEqualToNumber:@0]) { // not NSNull and not @0
-			if ([delimiter isEqualToString:COMMA_STR]) detectedDelimiter = COMMA;
-			if ([delimiter isEqualToString:SEMICOLON_STR]) detectedDelimiter = SEMICOLON;
-			if ([delimiter isEqualToString:COLON_STR]) detectedDelimiter = COLON;
-			if ([delimiter isEqualToString:TAB_STR]) detectedDelimiter = TAB;
-			if ([delimiter isEqualToString:SPACE_STR]) detectedDelimiter = SPACE;
-		}
+		if (![count isKindOfClass:[NSNull class]] && ![count isEqualToNumber:@0]) [detectedPossibleDelimiters addObject:delimiter];
 	}
 	
-	// NSLog(@"CSV Delimiter detected: %c", detectedDelimiter);
+	// return:
 	
-	return detectedDelimiter;
+	if (![detectedPossibleDelimiters count]) return DEFAULT_DELIMITER;
+	return delimiterStringToCharacter(detectedPossibleDelimiters[0]);
+	
+	
+	// The following code is a draft for detecting the delimiter more accurate even if there is more than one possible:
+	
+	/*
+	 Find the delimiter that is *always* before and after an double quote
+	 you could say 'It always closes the quotes he opens'
+	 this may be pretty buggy so I'll comment it out for now
+	 */
+	
+	/*
+	 // convert array to dict with bools
+	 NSMutableDictionary *delimiterQuoteCombinations = [NSMutableDictionary dictionary]; // delemiter is key, @true means in quotes (open), @false means closed
+	 for (NSString *delimiter in detectedPossibleDelimiters) delimiterQuoteCombinations[delimiter] = [NSNull null];
+	 
+	 NSUInteger length = [content length];
+	 for (NSUInteger i = 0; i < length; i++) {
+	 NSString *lastCharacter = [NSString stringWithFormat:@"%c", i > 0 ? [content characterAtIndex:i-1] : 0];
+	 NSString *character = [NSString stringWithFormat:@"%c", [content characterAtIndex:i]];
+	 NSString *nextCharacter = [NSString stringWithFormat:@"%c", i < length-1 ? [content characterAtIndex:i+1] : 0];
+	 if (delimiterOrNothing([lastCharacter characterAtIndex:0]) && [character isEqualToString:DOUBLE_QUOTE_STR] && // opening quote with delimiter before
+	 ([delimiterQuoteCombinations[lastCharacter] isEqualToNumber:@false] || [delimiterQuoteCombinations[lastCharacter] isKindOfClass:[NSNull class]])) // valid open of quote (all closed or nothing opened)
+	 delimiterQuoteCombinations[lastCharacter] = @true;
+	 else if ([character isEqualToString:DOUBLE_QUOTE_STR] && delimiterOrNothing([nextCharacter characterAtIndex:0]) && // a closing quote with delimiter afterwards
+	 [delimiterQuoteCombinations[nextCharacter] isEqualToNumber:@true]) // closes quote he opened
+	 delimiterQuoteCombinations[nextCharacter] = @false;
+	 }
+	 
+	 for (NSString *delimiter in delimiterQuoteCombinations) {
+	 if ([delimiterQuoteCombinations[delimiter] isEqualToNumber:@false]) return delimiterStringToCharacter(delimiter);
+	 }
+	 
+	 */
 	
 }
 
