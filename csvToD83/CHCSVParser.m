@@ -95,7 +95,10 @@ unichar delimiterStringToCharacter(NSString *s) {
  */
 unichar detectDelimiterOfCSVString(NSString *content) {
 	
-	#define DEFAULT_DELIMITER SEMICOLON // common delimiter in Germany
+	// common delimiter in Germany
+	#define DEFAULT_DELIMITER SEMICOLON
+	#define DEFAULT_DELIMITER_STR SEMICOLON_STR
+	
 	#define ZERO_NMB @0
 	
 	NSArray *lines = [content componentsSeparatedByString:@"\n"];
@@ -190,41 +193,9 @@ unichar detectDelimiterOfCSVString(NSString *content) {
 	
 	// return:
 	
-	if (![detectedPossibleDelimiters count]) return DEFAULT_DELIMITER;
-	return delimiterStringToCharacter(detectedPossibleDelimiters[0]);
-	
-	
-	// The following code is a draft for detecting the delimiter more accurate even if there is more than one possible:
-	
-	/*
-	 Find the delimiter that is *always* before and after an double quote
-	 you could say 'It always closes the quotes he opens'
-	 this may be pretty buggy so I'll comment it out for now
-	 */
-	
-	/*
-	 // convert array to dict with bools
-	 NSMutableDictionary *delimiterQuoteCombinations = [NSMutableDictionary dictionary]; // delemiter is key, @true means in quotes (open), @false means closed
-	 for (NSString *delimiter in detectedPossibleDelimiters) delimiterQuoteCombinations[delimiter] = [NSNull null];
-	 
-	 NSUInteger length = [content length];
-	 for (NSUInteger i = 0; i < length; i++) {
-	 NSString *lastCharacter = [NSString stringWithFormat:@"%c", i > 0 ? [content characterAtIndex:i-1] : 0];
-	 NSString *character = [NSString stringWithFormat:@"%c", [content characterAtIndex:i]];
-	 NSString *nextCharacter = [NSString stringWithFormat:@"%c", i < length-1 ? [content characterAtIndex:i+1] : 0];
-	 if (delimiterOrNothing([lastCharacter characterAtIndex:0]) && [character isEqualToString:DOUBLE_QUOTE_STR] && // opening quote with delimiter before
-	 ([delimiterQuoteCombinations[lastCharacter] isEqualToNumber:@false] || [delimiterQuoteCombinations[lastCharacter] isKindOfClass:[NSNull class]])) // valid open of quote (all closed or nothing opened)
-	 delimiterQuoteCombinations[lastCharacter] = @true;
-	 else if ([character isEqualToString:DOUBLE_QUOTE_STR] && delimiterOrNothing([nextCharacter characterAtIndex:0]) && // a closing quote with delimiter afterwards
-	 [delimiterQuoteCombinations[nextCharacter] isEqualToNumber:@true]) // closes quote he opened
-	 delimiterQuoteCombinations[nextCharacter] = @false;
-	 }
-	 
-	 for (NSString *delimiter in delimiterQuoteCombinations) {
-	 if ([delimiterQuoteCombinations[delimiter] isEqualToNumber:@false]) return delimiterStringToCharacter(delimiter);
-	 }
-	 
-	 */
+	if (![detectedPossibleDelimiters count]) return DEFAULT_DELIMITER; // nichts gefunden -> default
+	if ([detectedPossibleDelimiters count] > 1) for (NSString *delimiter in detectedPossibleDelimiters) if ([delimiter isEqualToString:DEFAULT_DELIMITER_STR]) return DEFAULT_DELIMITER; // default und andere möglich -> default
+	return delimiterStringToCharacter(detectedPossibleDelimiters[0]); // eins onder mehrere (nicht default) möglich -> eins davon
 	
 }
 

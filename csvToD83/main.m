@@ -32,7 +32,6 @@
 #include <stdio.h>
 
 NSString *LGRead(NSString *question, const int length) {
-	
 	fprintf(stdout, "%s: ", [question cStringUsingEncoding:NSUTF8StringEncoding]);
 	char response[length];
 	char *success = fgets(response, length, stdin);
