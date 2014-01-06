@@ -71,16 +71,16 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
 #define DOUBLE_QUOTE_STR @"\""
 
 BOOL delimiterOrNothing(unichar character) {
-	return character == COMMA || character == SEMICOLON || character == COLON || character == TAB || character == SPACE || character == 0;
+    return character == COMMA || character == SEMICOLON || character == COLON || character == TAB || character == SPACE || character == 0;
 }
 
 unichar delimiterStringToCharacter(NSString *s) {
-	if ([s isEqualToString:COMMA_STR]) return COMMA;
-	if ([s isEqualToString:SEMICOLON_STR]) return SEMICOLON;
-	if ([s isEqualToString:COLON_STR]) return COLON;
-	if ([s isEqualToString:TAB_STR]) return TAB;
-	if ([s isEqualToString:SPACE_STR]) return SPACE;
-	return 0; // error!
+    if ([s isEqualToString:COMMA_STR]) return COMMA;
+    if ([s isEqualToString:SEMICOLON_STR]) return SEMICOLON;
+    if ([s isEqualToString:COLON_STR]) return COLON;
+    if ([s isEqualToString:TAB_STR]) return TAB;
+    if ([s isEqualToString:SPACE_STR]) return SPACE;
+    return 0; // error!
 }
 
 /*
@@ -94,114 +94,114 @@ unichar delimiterStringToCharacter(NSString *s) {
  - loads whole file into memory
  */
 unichar detectDelimiterOfCSVString(NSString *content) {
-	
-	// common delimiter in Germany
-	#define DEFAULT_DELIMITER SEMICOLON
-	#define DEFAULT_DELIMITER_STR SEMICOLON_STR
-	
-	#define ZERO_NMB @0
-	
-	NSArray *lines = [content componentsSeparatedByString:@"\n"];
-	
-	if ([lines count] < 2) return DEFAULT_DELIMITER; // skip detection if file is too short, then use comma
-	
-	// count per line:
-	
-	/*
-	 Array of Sets (one per line)
-	 Sets contain number of occurrences of one char in that line with character as key
-	 */
-	NSMutableArray *linesCounts = [NSMutableArray array];
-	
-	for (NSString *line in lines) {
-	
-		NSMutableDictionary *counts = [NSMutableDictionary dictionaryWithDictionary:@{COMMA_STR: ZERO_NMB,
-																					  SEMICOLON_STR: ZERO_NMB,
-																					  COLON_STR: ZERO_NMB,
-																					  TAB_STR: ZERO_NMB,
-																					  SPACE_STR: ZERO_NMB}];
-		BOOL quoteOpened = NO;
-		
-		NSUInteger length = [line length];
-		for (NSUInteger i = 0; i < length; i++) {
-			
-			unichar lastCharacter = i > 0 ? [line characterAtIndex:i-1] : 0;
-			unichar character = [line characterAtIndex:i];
-			unichar nextCharacter = i < length-1 ? [line characterAtIndex:i+1] : 0;
-			
-			if (!quoteOpened && delimiterOrNothing(lastCharacter) && character == DOUBLE_QUOTE) { // opening quote
-				
-				quoteOpened = YES;
-			
-			} else if (quoteOpened && character == DOUBLE_QUOTE && delimiterOrNothing(nextCharacter)) { // closing quote
-				
-				quoteOpened = NO;
-				
-			} else if (!quoteOpened) { // delimiter
-				
-				#define INCREMENT_COUNT(_key) counts[_key] = [NSNumber numberWithUnsignedInteger:[counts[_key] unsignedIntegerValue] + 1]
-				
-				switch (character) {
-					case COMMA:
-						INCREMENT_COUNT(COMMA_STR);
-						break;
-					case SEMICOLON:
-						INCREMENT_COUNT(SEMICOLON_STR);
-						break;
-					case COLON:
-						INCREMENT_COUNT(COLON_STR);
-						break;
-					case TAB:
-						INCREMENT_COUNT(TAB_STR);
-						break;
-					case SPACE:
-						INCREMENT_COUNT(SPACE_STR);
-						break;
-				}
-				
-			}
-			
-		}
-		
-		[linesCounts addObject:counts];
-		
-	}
-	
-	// detect possible counts:
-	
-	/*
-	 nil at start
-	 value for key is NSNull if invalid
-	 */
-	NSMutableDictionary *possibleCounts = nil;
-	for (NSMutableDictionary *lineCounts in linesCounts) {
-		if (!possibleCounts) // if nothing so far
-			possibleCounts = lineCounts; // use this to start
-		else
-			for (NSString *delimiter in lineCounts) // each delimiter
-				if (![possibleCounts[delimiter] isKindOfClass:[NSNull class]] && ![lineCounts[delimiter] isEqualToNumber:possibleCounts[delimiter]]) // if not excluded yet and is not equal to so far counts
-					possibleCounts[delimiter] = [NSNull null]; // exclude this delimiter
-	}
-	
-	// extract possible delimiters:
-	
-	NSMutableArray *detectedPossibleDelimiters = [NSMutableArray array];
-	for (NSString *delimiter in possibleCounts) {
-		NSNumber *count = possibleCounts[delimiter];
-		if (![count isKindOfClass:[NSNull class]] && ![count isEqualToNumber:@0]) [detectedPossibleDelimiters addObject:delimiter];
-	}
-	
-	// return:
-	
-	if (![detectedPossibleDelimiters count]) return DEFAULT_DELIMITER; // nichts gefunden -> default
-	if ([detectedPossibleDelimiters count] > 1) for (NSString *delimiter in detectedPossibleDelimiters) if ([delimiter isEqualToString:DEFAULT_DELIMITER_STR]) return DEFAULT_DELIMITER; // default und andere möglich -> default
-	return delimiterStringToCharacter(detectedPossibleDelimiters[0]); // eins onder mehrere (nicht default) möglich -> eins davon
-	
+    
+    // common delimiter in Germany
+    #define DEFAULT_DELIMITER SEMICOLON
+    #define DEFAULT_DELIMITER_STR SEMICOLON_STR
+    
+    #define ZERO_NMB @0
+    
+    NSArray *lines = [content componentsSeparatedByString:@"\n"];
+    
+    if ([lines count] < 2) return DEFAULT_DELIMITER; // skip detection if file is too short
+    
+    // count per line:
+    
+    /*
+     Array of Sets (one per line)
+     Sets contain number of occurrences of one char in that line with character as key
+     */
+    NSMutableArray *linesCounts = [NSMutableArray array];
+    
+    for (NSString *line in lines) {
+    
+        NSMutableDictionary *counts = [NSMutableDictionary dictionaryWithDictionary:@{COMMA_STR: ZERO_NMB,
+                                                                                      SEMICOLON_STR: ZERO_NMB,
+                                                                                      COLON_STR: ZERO_NMB,
+                                                                                      TAB_STR: ZERO_NMB,
+                                                                                      SPACE_STR: ZERO_NMB}];
+        BOOL quoteOpened = NO;
+        
+        NSUInteger length = [line length];
+        for (NSUInteger i = 0; i < length; i++) {
+            
+            unichar lastCharacter = i > 0 ? [line characterAtIndex:i-1] : 0;
+            unichar character = [line characterAtIndex:i];
+            unichar nextCharacter = i < length-1 ? [line characterAtIndex:i+1] : 0;
+            
+            if (!quoteOpened && delimiterOrNothing(lastCharacter) && character == DOUBLE_QUOTE) { // opening quote
+                
+                quoteOpened = YES;
+            
+            } else if (quoteOpened && character == DOUBLE_QUOTE && delimiterOrNothing(nextCharacter)) { // closing quote
+                
+                quoteOpened = NO;
+                
+            } else if (!quoteOpened) { // delimiter
+                
+                #define INCREMENT_COUNT(_key) counts[_key] = [NSNumber numberWithUnsignedInteger:[counts[_key] unsignedIntegerValue] + 1]
+                
+                switch (character) {
+                    case COMMA:
+                        INCREMENT_COUNT(COMMA_STR);
+                        break;
+                    case SEMICOLON:
+                        INCREMENT_COUNT(SEMICOLON_STR);
+                        break;
+                    case COLON:
+                        INCREMENT_COUNT(COLON_STR);
+                        break;
+                    case TAB:
+                        INCREMENT_COUNT(TAB_STR);
+                        break;
+                    case SPACE:
+                        INCREMENT_COUNT(SPACE_STR);
+                        break;
+                }
+                
+            }
+            
+        }
+        
+        [linesCounts addObject:counts];
+        
+    }
+    
+    // detect possible counts:
+    
+    /*
+     nil at start
+     value for key is NSNull if invalid
+     */
+    NSMutableDictionary *possibleCounts = nil;
+    for (NSMutableDictionary *lineCounts in linesCounts) {
+        if (!possibleCounts) // if nothing so far
+            possibleCounts = lineCounts; // use this to start
+        else
+            for (NSString *delimiter in lineCounts) // each delimiter
+                if (![possibleCounts[delimiter] isKindOfClass:[NSNull class]] && ![lineCounts[delimiter] isEqualToNumber:possibleCounts[delimiter]]) // if not excluded yet and is not equal to so far counts
+                    possibleCounts[delimiter] = [NSNull null]; // exclude this delimiter
+    }
+    
+    // extract possible delimiters:
+    
+    NSMutableArray *detectedPossibleDelimiters = [NSMutableArray array];
+    for (NSString *delimiter in possibleCounts) {
+        NSNumber *count = possibleCounts[delimiter];
+        if (![count isKindOfClass:[NSNull class]] && ![count isEqualToNumber:@0]) [detectedPossibleDelimiters addObject:delimiter];
+    }
+    
+    // return:
+    
+    if (![detectedPossibleDelimiters count]) return DEFAULT_DELIMITER; // nichts gefunden -> default
+    if ([detectedPossibleDelimiters count] > 1) for (NSString *delimiter in detectedPossibleDelimiters) if ([delimiter isEqualToString:DEFAULT_DELIMITER_STR]) return DEFAULT_DELIMITER; // default und andere möglich -> default
+    return delimiterStringToCharacter(detectedPossibleDelimiters[0]); // eins onder mehrere (nicht default) möglich -> eins davon
+    
 }
 
 unichar detectDelimiterOfCSVFile(NSString *path) {
-	NSString *content = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
-	return detectDelimiterOfCSVString(content);
+    NSString *content = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    return detectDelimiterOfCSVString(content);
 }
 
 // End modification by Luis Gerhorst

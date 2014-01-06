@@ -31,12 +31,12 @@
 @class LGMutableOrdinalNumber;
 
 @interface LGNode : NSObject {
-	/*
-	 * Child rules:
-	 * - must be from the same class
-	 * - must have the same number of sub-layers
-	 */
-	NSMutableArray *children;
+    /*
+     * Child rules:
+     * - must be from the same class
+     * - must have the same number of sub-layers
+     */
+    NSMutableArray *children;
 }
 
 // local:

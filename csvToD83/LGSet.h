@@ -29,7 +29,7 @@
 #import <Foundation/Foundation.h>
 
 @interface LGSet : NSObject {  // Zeile / Satz
-	NSMutableString *string; // <= 74 chars
+    NSMutableString *string; // <= 74 chars
 }
 
 - (void)setType:(NSUInteger)aInt;

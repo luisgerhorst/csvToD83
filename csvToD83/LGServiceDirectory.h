@@ -31,17 +31,17 @@
 
 @interface LGServiceDirectory : LGNode // Leistungsverzeichnis
 {
-	
-	// 01 Informationen Leistungsverzeichnis
-	NSString *description; // LVBEZ - Bezeichnung des Leistungsverzeichnisses
-	NSDate *date; // LVDATUM - Datum des Leistungsverzeichnisses
-	
-	// 02 Informationen Projekt
-	NSString *project; // PROBEZ - Bezeichnung des Projekts
-	
-	// 03 Informationen Auftraggeber
-	NSString *client; // AGBEZ - Bezeichnung des Auftraggebers
-	
+    
+    // 01 Informationen Leistungsverzeichnis
+    NSString *description; // LVBEZ - Bezeichnung des Leistungsverzeichnisses
+    NSDate *date; // LVDATUM - Datum des Leistungsverzeichnisses
+    
+    // 02 Informationen Projekt
+    NSString *project; // PROBEZ - Bezeichnung des Projekts
+    
+    // 03 Informationen Auftraggeber
+    NSString *client; // AGBEZ - Bezeichnung des Auftraggebers
+    
 }
 
 + (instancetype)serviceDirectoryWithContentsOfCSVFile:(NSString *)csvFilePath;

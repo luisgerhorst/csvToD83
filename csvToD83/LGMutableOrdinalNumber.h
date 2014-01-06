@@ -29,8 +29,8 @@
 #import <Foundation/Foundation.h>
 
 @interface LGMutableOrdinalNumber : NSObject {
-	NSMutableArray *location; // the ordinal number as array, representing the current position in the tree
-	NSArray *scheme; // defining number of digits per layer and max number of layers
+    NSMutableArray *location; // the ordinal number as array, representing the current position in the tree
+    NSArray *scheme; // defining number of digits per layer and max number of layers
 }
 
 // create:

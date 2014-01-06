@@ -34,47 +34,47 @@
 
 - (id)init
 {
-	self = [super init];
-	children = [NSMutableArray array];
-	return self;
+    self = [super init];
+    children = [NSMutableArray array];
+    return self;
 }
 
 // used by LGService to make sure no children are appended to them
 - (id)initWithoutChildren
 {
-	self = [super init];
-	return self;
+    self = [super init];
+    return self;
 }
 
 - (NSMutableArray *)children
 {
-	return children;
+    return children;
 }
 
 // existing layers must be complete (all their children must be already added)
 - (void)appendChild:(LGNode *)aChild
 {
-	if ([children count] && ([[children objectAtIndex:0] class] != [aChild class])) @throw [NSException exceptionWithName:@"LGBadAddChildCall" reason:[NSString stringWithFormat:@"Node %@ can only contain children of class %@ (not %@)", self, [[children objectAtIndex:0] class], [aChild class]] userInfo:nil]; // if node already has children, new child must be of the same type (can't check for layers equality here because new child might not be complete yet)
-	else [children addObject:aChild];
+    if ([children count] && ([[children objectAtIndex:0] class] != [aChild class])) @throw [NSException exceptionWithName:@"LGBadAddChildCall" reason:[NSString stringWithFormat:@"Node %@ can only contain children of class %@ (not %@)", self, [[children objectAtIndex:0] class], [aChild class]] userInfo:nil]; // if node already has children, new child must be of the same type (can't check for layers equality here because new child might not be complete yet)
+    else [children addObject:aChild];
 }
 
 - (BOOL)layersValid
 {
-	NSUInteger layers = [[children objectAtIndex:0] layers];
-	for (LGNode *child in children) {
-		if ([child layers] != layers) return NO;
-	}
-	return YES;
+    NSUInteger layers = [[children objectAtIndex:0] layers];
+    for (LGNode *child in children) {
+        if ([child layers] != layers) return NO;
+    }
+    return YES;
 }
 
 // recursive stuff:
 
 - (NSUInteger)layers
 {
-	if (children && [children count])
-		return [[children objectAtIndex:0] layers] + 1;
-	else
-		return 1;
+    if (children && [children count])
+        return [[children objectAtIndex:0] layers] + 1;
+    else
+        return 1;
 }
 
 /*
@@ -84,33 +84,33 @@
  */
 - (NSArray *)maxChildCounts
 {
-	
-	NSMutableArray *childrensMaxCounts;
-	for (LGNode *child in children) { // each child
-		NSArray *childsMaxCounts = [child maxChildCounts]; // get max child counts
-		if (!childrensMaxCounts) childrensMaxCounts = [NSMutableArray arrayWithArray:childsMaxCounts];
-		else {
-			for (NSUInteger i = 0; i < [childsMaxCounts count]; i++) { // for each layer (under self)
-				if ([[childrensMaxCounts objectAtIndex:i] compare:[childsMaxCounts objectAtIndex:i]] == NSOrderedAscending) { // if childs max of layer > max of layer
-					[childrensMaxCounts replaceObjectAtIndex:i withObject:[childsMaxCounts objectAtIndex:i]]; // max of layer = childs max of that layer
-				}
-			}
-		}
-	}
-	
-	// append childrensMaxCounts to own child count array
-	NSMutableArray *full = [NSMutableArray arrayWithObject:[NSNumber numberWithInteger:[children count]]];
-	[full addObjectsFromArray:childrensMaxCounts];
-	
-	return full;
+    
+    NSMutableArray *childrensMaxCounts;
+    for (LGNode *child in children) { // each child
+        NSArray *childsMaxCounts = [child maxChildCounts]; // get max child counts
+        if (!childrensMaxCounts) childrensMaxCounts = [NSMutableArray arrayWithArray:childsMaxCounts];
+        else {
+            for (NSUInteger i = 0; i < [childsMaxCounts count]; i++) { // for each layer (under self)
+                if ([[childrensMaxCounts objectAtIndex:i] compare:[childsMaxCounts objectAtIndex:i]] == NSOrderedAscending) { // if childs max of layer > max of layer
+                    [childrensMaxCounts replaceObjectAtIndex:i withObject:[childsMaxCounts objectAtIndex:i]]; // max of layer = childs max of that layer
+                }
+            }
+        }
+    }
+    
+    // append childrensMaxCounts to own child count array
+    NSMutableArray *full = [NSMutableArray arrayWithObject:[NSNumber numberWithInteger:[children count]]];
+    [full addObjectsFromArray:childrensMaxCounts];
+    
+    return full;
 }
 
 // recursive with end element LGService
 - (NSUInteger)servicesCount
 {
-	NSUInteger servicesCount = 0;
-	for (LGNode *child in children) servicesCount += [child servicesCount];
-	return servicesCount;
+    NSUInteger servicesCount = 0;
+    for (LGNode *child in children) servicesCount += [child servicesCount];
+    return servicesCount;
 }
 
 // to be overwritten:
@@ -122,7 +122,7 @@
  */
 - (NSArray *)d83SetsWithOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber
 {
-	@throw [NSException exceptionWithName:@"LGNode_d83SetsForOrdinalNumber" reason:@"Every class inheriting from LGNode has to overwrite the method - (NSArray *)d83SetsForOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber" userInfo:nil];
+    @throw [NSException exceptionWithName:@"LGNode_d83SetsForOrdinalNumber" reason:@"Every class inheriting from LGNode has to overwrite the method - (NSArray *)d83SetsForOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber" userInfo:nil];
 }
 
 @end

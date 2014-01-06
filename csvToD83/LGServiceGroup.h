@@ -35,13 +35,13 @@ typedef NS_ENUM(NSInteger, LGServiceGroup_TYPE) { // LVGRART
 };
 
 @interface LGServiceGroup : LGNode { // LV-Gruppe
-	
-	// 11 Beginn einer LV-Gruppe
-	LGServiceGroup_TYPE type; // LVGRART
-	
-	// 12 Bezeichnung einer LV-Gruppe
-	NSString *title; // LVGRBEZ
-	
+    
+    // 11 Beginn einer LV-Gruppe
+    LGServiceGroup_TYPE type; // LVGRART
+    
+    // 12 Bezeichnung einer LV-Gruppe
+    NSString *title; // LVGRBEZ
+    
 }
 
 - (id)initWithTitle:(NSString *)string;

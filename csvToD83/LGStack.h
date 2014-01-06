@@ -29,7 +29,7 @@
 #import <Foundation/Foundation.h>
 
 @interface LGStack : NSObject {
-	NSMutableArray *stack;
+    NSMutableArray *stack;
 }
 
 - (id)init;

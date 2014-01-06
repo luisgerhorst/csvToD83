@@ -29,8 +29,8 @@
 #import <Foundation/Foundation.h>
 
 @interface LGOrdinalNumber : NSObject {
-	NSArray *ordinalNumber;
-	BOOL forGroup;
+    NSArray *ordinalNumber;
+    BOOL forGroup;
 }
 
 - (id)initWithString:(NSString *)string;

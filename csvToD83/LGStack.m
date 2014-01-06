@@ -32,37 +32,37 @@
 
 - (id)init
 {
-	self = [super init];
-	stack = [NSMutableArray array];
-	return self;
+    self = [super init];
+    stack = [NSMutableArray array];
+    return self;
 }
 
 - (void)push:(id)object
 {
-	// NSLog(@"pushing object of class %@", object);
-	[stack addObject:object];
+    // NSLog(@"pushing object of class %@", object);
+    [stack addObject:object];
 }
 
 - (void)pop
 {
-	[stack removeLastObject];
+    [stack removeLastObject];
 }
 
 - (void)pop:(NSUInteger)toPop
 {
-	for (int i = 0; i < toPop; i++) [stack removeLastObject];
+    for (int i = 0; i < toPop; i++) [stack removeLastObject];
 }
 
 - (NSUInteger)heigth
 {
-	return [stack count];
+    return [stack count];
 }
 
 - (id)objectOnTop
 {
-	NSUInteger count = [stack count];
-	if (count > 0) return [stack objectAtIndex:count - 1];
-	else return nil;
+    NSUInteger count = [stack count];
+    if (count > 0) return [stack objectAtIndex:count - 1];
+    else return nil;
 }
 
 @end

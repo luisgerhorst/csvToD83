@@ -31,18 +31,18 @@
 #import "LGNode.h"
 
 @interface LGService : LGNode {
-	
-	// Beginn einer Teilleistung
-	float quantity; // MENGE
-	NSString *unit; // EINHEIT
-	LGServiceType *type; // contains POSART1, POSART2 and POSTYP
-	
-	// Kurztext
-	NSString *title; // KURZTEXT
-	
-	// Langtext
-	NSMutableString *text; // LANGTEXT
-	
+    
+    // Beginn einer Teilleistung
+    float quantity; // MENGE
+    NSString *unit; // EINHEIT
+    LGServiceType *type; // contains POSART1, POSART2 and POSTYP
+    
+    // Kurztext
+    NSString *title; // KURZTEXT
+    
+    // Langtext
+    NSMutableString *text; // LANGTEXT
+    
 }
 
 - (id)initWithTitle:(NSString *)aTitle ofQuantity:(float)aQuantity inUnit:(NSString *)aUnit withCSVTypeString:(NSString *)typeString;
