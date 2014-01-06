@@ -88,7 +88,7 @@
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:12];
-    [set setString:title range:NSMakeRange(2, 40)]; // LVGRBEZ
+    [set setString:title range:NSMakeRange(2, 40)]; // LVGRBEZ todo: cut to avoid error
     return set;
 }
 

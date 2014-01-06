@@ -52,9 +52,11 @@
  */
 - (void)setString:(NSString *)s range:(NSRange)range // nicht-numerisch, werden mit lehrzeichen aufgefüllt
 {
-    if ([s length] > range.length) @throw [NSException exceptionWithName:@"LGSet_SetStringForRange" reason:[NSString stringWithFormat:@"String \"%@\" has more than %i characters.", s, range.length] userInfo:nil];
-    while ([s length] < range.length) s = [NSString stringWithFormat:@"%@ ", s];
-    [string replaceCharactersInRange:range withString:s];
+    NSData *ASCIIData = [s dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    NSString *ASCIIString = [[NSString alloc] initWithData:ASCIIData encoding:NSASCIIStringEncoding];
+    if ([ASCIIString length] > range.length) @throw [NSException exceptionWithName:@"LGSet_SetStringForRange" reason:[NSString stringWithFormat:@"String \"%@\" in ASCII-Encoding has more than %lu characters.", s, (unsigned long)range.length] userInfo:nil];
+    while ([ASCIIString length] < range.length) ASCIIString = [NSString stringWithFormat:@"%@ ", ASCIIString];
+    [string replaceCharactersInRange:range withString:ASCIIString];
 }
 
 - (void)setInteger:(NSUInteger)number range:(NSRange)range // Numerisch, werden mit Nullen vor zahl aufgefüllt

@@ -59,7 +59,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/luis/Documents/objective-c/csvToD83/test/3_broken.csv"
+            argument = "/Users/luis/Documents/objective-c/csvToD83/test/2.csv"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

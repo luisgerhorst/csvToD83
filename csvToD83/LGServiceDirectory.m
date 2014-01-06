@@ -26,13 +26,6 @@
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/*
-
-Todo:
-remove parantheses from csv strings
-
-*/
-
 #import "LGServiceDirectory.h"
 #import "CHCSVParser.h"
 #import "LGOrdinalNumber.h"
@@ -49,6 +42,11 @@ BOOL isEmpty(NSString *string) {
 
 NSUInteger digitsCount(NSInteger i) {
     return i > 0 ? (NSUInteger)log10((double)i) + 1 : 1;
+}
+
+NSString *removeParantheses(NSString *input) {
+    if ([input characterAtIndex:0] == '"' && [input characterAtIndex:[input length]-1] == '"') return [input substringWithRange:NSMakeRange(1, [input length]-2)];
+    return input;
 }
 
 @implementation LGServiceDirectory
@@ -78,7 +76,7 @@ NSUInteger digitsCount(NSInteger i) {
         if (ordinalNumber &&
             [ordinalNumber forGroup]) {
             
-            LGServiceGroup *group = [[LGServiceGroup alloc] initWithTitle:[line objectAtIndex:1]];
+            LGServiceGroup *group = [[LGServiceGroup alloc] initWithTitle:removeParantheses([line objectAtIndex:1])];
             
             NSUInteger toPop = [stack heigth] - [ordinalNumber depth];
             [stack pop:toPop];
@@ -89,7 +87,7 @@ NSUInteger digitsCount(NSInteger i) {
         } else if (ordinalNumber &&
                    ![ordinalNumber forGroup]) {
             
-            LGService *service = [[LGService alloc] initWithTitle:[line objectAtIndex:1] ofQuantity:[[line objectAtIndex:2] floatValue] inUnit:[line objectAtIndex:3] withCSVTypeString:[line objectAtIndex:4]];
+            LGService *service = [[LGService alloc] initWithTitle:removeParantheses([line objectAtIndex:1]) ofQuantity:[[line objectAtIndex:2] floatValue] inUnit:[line objectAtIndex:3] withCSVTypeString:[line objectAtIndex:4]];
             
             NSUInteger toPop = [stack heigth] - [ordinalNumber depth]; // maybe you have to pop another service first
             [stack pop:toPop];
@@ -101,7 +99,7 @@ NSUInteger digitsCount(NSInteger i) {
                    isEmpty([line objectAtIndex:0]) &&
                    !isEmpty([line objectAtIndex:1])) {
             
-            [[stack objectOnTop] appendTextChunk:[line objectAtIndex:1]];
+            [[stack objectOnTop] appendTextChunk:removeParantheses([line objectAtIndex:1])];
         
         }
         
@@ -149,16 +147,10 @@ NSUInteger digitsCount(NSInteger i) {
 
 - (BOOL)writeToD83File:(NSString *)d83FilePath error:(NSError *__autoreleasing *)error
 {
-    
     NSString *string = [self d83Value];
-    
-    NSData *ASCIIData = [string dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-    NSString *ASCIIString = [[NSString alloc] initWithData:ASCIIData encoding:NSASCIIStringEncoding];
-    BOOL writeSuccess = [ASCIIString writeToFile:d83FilePath atomically:NO encoding:NSUTF8StringEncoding error:error];
+    BOOL writeSuccess = [string writeToFile:d83FilePath atomically:NO encoding:NSUTF8StringEncoding error:error];
     if (!writeSuccess) return NO;
-    
     return YES;
-    
 }
 
 - (NSString *)d83Value

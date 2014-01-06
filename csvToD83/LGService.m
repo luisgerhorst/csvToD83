@@ -74,18 +74,35 @@
     [sets addObject:[self d83Set21WithOrdinalNumber:ordinalNumber]];
     [sets addObject:[self d83Set25]];
     
-    // split text by lines and length
-    NSArray *textLines = [text componentsSeparatedByString:@"\n"];
-    NSMutableArray *cutTextLines = [NSMutableArray array];
-    NSRegularExpression *lineRegExp = [NSRegularExpression regularExpressionWithPattern:@".{1,55}" options: 0 error:nil]; // max 55 chars
-    for (NSString *line in textLines) {
-        // split into line into chunks of max 55 chars
-        NSArray *matches = [lineRegExp matchesInString:line options:0 range:NSMakeRange(0, [line length])];
-        for (NSTextCheckingResult *match in matches) [cutTextLines addObject:[line substringWithRange:match.range]];
+    // split text by lines, spaces and long words by length
+    NSRegularExpression *wordLengthRegExp = [NSRegularExpression regularExpressionWithPattern:@".{1,55}" options:0 error:nil]; // 55 chars
+    NSArray *inputLines = [text componentsSeparatedByString:@"\n"];
+    NSMutableArray *lines = [NSMutableArray array];
+    for (NSString *line in inputLines) {
+        if ([line length] <= 55) {
+            [lines addObject:line];
+        } else { // line too long
+            NSArray *words = [line componentsSeparatedByString:@" "]; // split into words
+            NSMutableString *cutLine = [NSMutableString string]; // current cut line
+            for (NSString *word in words) {
+                if ([word length] > 55) { // word too long for a line
+                    NSArray *matches = [wordLengthRegExp matchesInString:word options:0 range:NSMakeRange(0,[word length])];
+                    for (NSTextCheckingResult *match in matches) [lines addObject:[word substringWithRange:match.range]];
+                } else if (([cutLine length] && [cutLine length] + [word length] + 1 <= 55) || (![cutLine length] && [word length] <= 55)) { // word fits into this line (with or without space)
+                    if ([cutLine length]) [cutLine appendString:@" "];
+                    [cutLine appendString:word];
+                } else { // word must be in next line
+                    [lines addObject:cutLine];
+                    cutLine = [NSMutableString string];
+                    [cutLine appendString:word];
+                }
+            }
+            if ([cutLine length]) [lines addObject:cutLine]; // add final words of line
+        }
     }
     
     // add to sets
-    for (NSString *chunk in cutTextLines) [sets addObject:[self d83Set26WithChunk:chunk]];
+    for (NSString *chunk in lines) [sets addObject:[self d83Set26WithChunk:chunk]];
     
     return sets;
 }
@@ -107,7 +124,7 @@
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:25];
-    [set setString:title range:NSMakeRange(2, 70)]; // KURZTEXT
+    [set setString:title range:NSMakeRange(2, 70)]; // KURZTEXT todo: cut to avoid error
     return set;
 }
 
@@ -115,7 +132,7 @@
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:26];
-    [set setString:chunk range:NSMakeRange(5, 55)]; // LANGTEXT
+    [set setString:chunk range:NSMakeRange(5, 55)]; // LANGTEXT todo: cut to avoid errorå
     return set;
 }
 
