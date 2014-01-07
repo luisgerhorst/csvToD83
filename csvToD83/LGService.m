@@ -54,6 +54,29 @@
     [text appendString:textChunk];
 }
 
+/*
+ Called when adding of text chunks is done
+ Removes empty lines and spaces from start/end of text
+ */
+- (void)trimText
+{
+    // remove whitespaces from line end
+    NSRegularExpression *whitespacesLineEnd = [NSRegularExpression regularExpressionWithPattern:@"[ \t]+\n" options:0 error:nil];
+    text = [NSMutableString stringWithString:[whitespacesLineEnd stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@"\n"]];
+    
+    // remove whitespaces from end
+    NSRegularExpression *whitespacesEnd = [NSRegularExpression regularExpressionWithPattern:@"[ \t]+$" options:0 error:nil];
+    text = [NSMutableString stringWithString:[whitespacesEnd stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@""]];
+    
+    // removew newlines from beginning
+    NSRegularExpression *newlinesAtStart = [NSRegularExpression regularExpressionWithPattern:@"^+[\n]" options:0 error:nil];
+    text = [NSMutableString stringWithString:[newlinesAtStart stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@""]];
+    
+    // removew newlines from end
+    NSRegularExpression *newlinesAtEnd = [NSRegularExpression regularExpressionWithPattern:@"[\n]+$" options:0 error:nil];
+    text = [NSMutableString stringWithString:[newlinesAtEnd stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@""]];
+}
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<Service: %@>", title];
@@ -75,20 +98,21 @@
     [sets addObject:[self d83Set25]];
     
     // split text by lines, spaces and long words by length
-    NSRegularExpression *wordLengthRegExp = [NSRegularExpression regularExpressionWithPattern:@".{1,55}" options:0 error:nil]; // 55 chars
+    NSUInteger maxLength = 55; // max length of one line
+    NSRegularExpression *wordLengthRegExp = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@".{1,%lu}", (unsigned long)maxLength] options:0 error:nil]; // 55 chars
     NSArray *inputLines = [text componentsSeparatedByString:@"\n"];
-    NSMutableArray *lines = [NSMutableArray array];
+    NSMutableArray *lines = [NSMutableArray array]; // output array
     for (NSString *line in inputLines) {
-        if ([line length] <= 55) {
+        if ([line length] <= maxLength) {
             [lines addObject:line];
         } else { // line too long
             NSArray *words = [line componentsSeparatedByString:@" "]; // split into words
             NSMutableString *cutLine = [NSMutableString string]; // current cut line
             for (NSString *word in words) {
-                if ([word length] > 55) { // word too long for a line
+                if ([word length] > maxLength) { // word too long for a line
                     NSArray *matches = [wordLengthRegExp matchesInString:word options:0 range:NSMakeRange(0,[word length])];
                     for (NSTextCheckingResult *match in matches) [lines addObject:[word substringWithRange:match.range]];
-                } else if (([cutLine length] && [cutLine length] + [word length] + 1 <= 55) || (![cutLine length] && [word length] <= 55)) { // word fits into this line (with or without space)
+                } else if (([cutLine length] && [cutLine length] + [word length] + 1 <= maxLength) || (![cutLine length] && [word length] <= maxLength)) { // word fits into this line (with or without space)
                     if ([cutLine length]) [cutLine appendString:@" "];
                     [cutLine appendString:word];
                 } else { // word must be in next line
@@ -103,6 +127,11 @@
     
     // add to sets
     for (NSString *chunk in lines) [sets addObject:[self d83Set26WithChunk:chunk]];
+    
+    /*
+     creates one empty 26 set even if text is empty
+     each service needs at least one 26 set
+     */
     
     return sets;
 }

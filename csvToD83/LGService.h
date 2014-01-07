@@ -47,5 +47,6 @@
 
 - (id)initWithTitle:(NSString *)aTitle ofQuantity:(float)aQuantity inUnit:(NSString *)aUnit withCSVTypeString:(NSString *)typeString;
 - (void)appendTextChunk:(NSString *)textChunk;
+- (void)trimText;
 
 @end

@@ -59,7 +59,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/luis/Documents/objective-c/csvToD83/test/2.csv"
+            argument = "/Users/luis/Documents/objective-c/csvToD83/test/1.csv"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
@@ -72,7 +72,10 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
+      <PathRunnable
+         FilePath = "/Users/luis/Documents/objective-c/csvToD83/executables/csvToD83">
+      </PathRunnable>
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A01AA391185F38920067FA5A"
@@ -80,7 +83,7 @@
             BlueprintName = "csvToD83"
             ReferencedContainer = "container:csvToD83.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -45,13 +45,15 @@ Ordnungszahl | Text | Menge | Einheit | Art
 
 * __Ordnungszahl:__ Muss mit Zahl enden
 * __Text__ in Zeile mit Ordnungszahl: Kurztext, max 70 Stellen
-* __Menge:__ Zahl, mit oder ohne Komma
-* __Einheit:__ Max 4 Stellen, _Stundenlohnarbeiten_ die in "h" gemessen werden, werden automatisch als solche erkannt. "psch" für Pauschalleistungen.
-* __Text__ alle Zeilen bis zum Beginn der nächsten Teilleistung/LV-Gruppe: Langtext der Teilleistung, eine Zeile sollte nicht mehr als 55 Stellen habe.
+* __Menge:__ Zahl, mit oder ohne Komma, muss größer `0` sein
+* __Einheit:__ Max 4 Stellen, _Stundenlohnarbeiten_ die in `h` gemessen werden, werden automatisch als solche erkannt. `psch` für Pauschalleistungen (mit Menge 1).
+* __Text__ alle Zeilen bis zum Beginn der nächsten Teilleistung/LV-Gruppe: Langtext der Teilleistung, eine Zeile sollte nicht mehr als 55 Stellen habe. Optional.
 * __Art:__
 	* kein Inhalt: Normalposition
 	* BG: Bedarfsposition mit Gesamtbetrag
 	* BE: Bedarfsposition ohne Gesamtbetrag
+	
+Alles Felder bis auf den Langtext und die Art müssen immer belegt sein.
 	
 ## Quellen
 

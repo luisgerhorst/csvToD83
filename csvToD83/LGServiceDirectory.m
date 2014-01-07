@@ -40,12 +40,16 @@ BOOL isEmpty(NSString *string) {
     return [trimmed length] == 0;
 }
 
+NSString *removeSpaces(NSString *string) {
+    return [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
 NSUInteger digitsCount(NSInteger i) {
     return i > 0 ? (NSUInteger)log10((double)i) + 1 : 1;
 }
 
 NSString *removeParantheses(NSString *input) {
-    if ([input characterAtIndex:0] == '"' && [input characterAtIndex:[input length]-1] == '"') return [input substringWithRange:NSMakeRange(1, [input length]-2)];
+    if ([input length] > 2 && [input characterAtIndex:0] == '"' && [input characterAtIndex:[input length]-1] == '"') return [input substringWithRange:NSMakeRange(1, [input length]-2)];
     return input;
 }
 
@@ -70,13 +74,18 @@ NSString *removeParantheses(NSString *input) {
         
         if ([line count] < 5) @throw [NSException exceptionWithName:@"LGServiceDirectoryInvalidTableStructure" reason:[NSString stringWithFormat:@"Table must have at least 5 collumns, %@ has not", array] userInfo:nil];
         
-        LGOrdinalNumber *ordinalNumber = [[LGOrdinalNumber alloc] initWithString:[line objectAtIndex:0]]; // nil if no valid string
+        LGOrdinalNumber *ordinalNumber = [[LGOrdinalNumber alloc] initWithString:line[0]]; // nil if no valid string
+        
+        // todo: improve detection, save warnings/errors
         
         // ServiceGroup:
         if (ordinalNumber &&
-            [ordinalNumber forGroup]) {
+            [ordinalNumber forGroup] && // ordinal number of group
+            !isEmpty(line[1])) { // has title
             
-            LGServiceGroup *group = [[LGServiceGroup alloc] initWithTitle:removeParantheses([line objectAtIndex:1])];
+            if ([[stack objectOnTop] class] == [LGService class]) [[stack objectOnTop] trimText]; // finished previous service
+            
+            LGServiceGroup *group = [[LGServiceGroup alloc] initWithTitle:removeParantheses(line[1])];
             
             NSUInteger toPop = [stack heigth] - [ordinalNumber depth];
             [stack pop:toPop];
@@ -85,9 +94,14 @@ NSString *removeParantheses(NSString *input) {
             
         // Service:
         } else if (ordinalNumber &&
-                   ![ordinalNumber forGroup]) {
+                   ![ordinalNumber forGroup] && // ordinal number of service
+                   !isEmpty(line[1]) && // has title
+                   [line[2] floatValue] > 0 && // quantity > 0
+                   !isEmpty(line[3]) && [line[3] length] <= 4) { // has unit with valid length
             
-            LGService *service = [[LGService alloc] initWithTitle:removeParantheses([line objectAtIndex:1]) ofQuantity:[[line objectAtIndex:2] floatValue] inUnit:[line objectAtIndex:3] withCSVTypeString:[line objectAtIndex:4]];
+            if ([[stack objectOnTop] class] == [LGService class]) [[stack objectOnTop] trimText]; // finished previous service
+            
+            LGService *service = [[LGService alloc] initWithTitle:removeParantheses(line[1]) ofQuantity:[line[2] floatValue] inUnit:line[3] withCSVTypeString:line[4]];
             
             NSUInteger toPop = [stack heigth] - [ordinalNumber depth]; // maybe you have to pop another service first
             [stack pop:toPop];
@@ -95,20 +109,19 @@ NSString *removeParantheses(NSString *input) {
             [stack push:service];
             
         // Service Text Chunk:
-        } else if ([[stack objectOnTop] class] == [LGService class] &&
-                   isEmpty([line objectAtIndex:0]) &&
-                   !isEmpty([line objectAtIndex:1])) {
+        } else if ([[stack objectOnTop] class] == [LGService class]) { // parent is service
             
-            [[stack objectOnTop] appendTextChunk:removeParantheses([line objectAtIndex:1])];
+            [[stack objectOnTop] appendTextChunk:removeParantheses(line[1])];
         
         }
         
     }
     
+    if ([[stack objectOnTop] class] == [LGService class]) [[stack objectOnTop] trimText]; // finished last service
+    
     if (![serviceDirectory layersValid]) @throw [NSException exceptionWithName:@"LGInvalidLayers" reason:@"Each service must have the same number of parent layers" userInfo:nil];
     
     return serviceDirectory;
-    
 }
 
 - (id)init
