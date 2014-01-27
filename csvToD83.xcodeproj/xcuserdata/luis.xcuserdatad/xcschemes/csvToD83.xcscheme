@@ -59,7 +59,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/luis/Documents/objective-c/csvToD83/test/1.csv"
+            argument = "/Users/luis/Documents/objective-c/csvToD83/test/2_semicolon.csv"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

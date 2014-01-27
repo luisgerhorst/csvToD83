@@ -30,7 +30,7 @@
 #import "LGServiceType.h"
 #import "LGNode.h"
 
-@interface LGService : LGNode {
+@interface LGService : LGNode <LGNodeInherting> {
     
     // Beginn einer Teilleistung
     float quantity; // MENGE

@@ -34,7 +34,7 @@ typedef NS_ENUM(NSInteger, LGServiceGroup_TYPE) { // LVGRART
     LGServiceGroup_TYPE_A, // A
 };
 
-@interface LGServiceGroup : LGNode { // LV-Gruppe
+@interface LGServiceGroup : LGNode <LGNodeInherting> { // LV-Gruppe
     
     // 11 Beginn einer LV-Gruppe
     LGServiceGroup_TYPE type; // LVGRART

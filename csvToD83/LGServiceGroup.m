@@ -29,6 +29,7 @@
 #import "LGServiceGroup.h"
 #import "LGMutableOrdinalNumber.h"
 #import "LGSet.h"
+#import "LGOrdinalNumberScheme.h"
 
 @implementation LGServiceGroup
 
@@ -54,32 +55,32 @@
 
 // D83
 
-- (NSArray *)d83SetsWithOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber
+- (NSArray *)d83SetsWithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme
 {
     NSMutableArray *sets = [NSMutableArray array];
-    [sets addObject:[self d83Set11WithOrdinalNumber:ordinalNumber]];
+    [sets addObject:[self d83Set11WithOrdinalNumber:ordinalNumber ofScheme:ordinalNumberScheme]];
     [sets addObject:[self d83Set12]];
     
     // put your own children one layer under you
-    [ordinalNumber layerDown];
+    LGMutableOrdinalNumber *childrenOrdinalNumber = [[LGMutableOrdinalNumber alloc] initWithOrdinalNumber:ordinalNumber];
+    [childrenOrdinalNumber layerDown];
     for (LGNode *child in children) {
-        [ordinalNumber next]; // remeber: each new layer starts at 0
-        [sets addObjectsFromArray: [child d83SetsWithOrdinalNumber:ordinalNumber]];
+        [childrenOrdinalNumber next]; // remeber: each new layer starts at 0
+        [sets addObjectsFromArray: [child d83SetsWithOrdinalNumber:(LGOrdinalNumber *)childrenOrdinalNumber ofScheme:ordinalNumberScheme]];
     }
-    [ordinalNumber layerUp];
     
-    [sets addObject:[self d83Set31WithOrdinalNumber:ordinalNumber]];
+    [sets addObject:[self d83Set31WithOrdinalNumber:ordinalNumber ofScheme:ordinalNumberScheme]];
 
     return sets;
 }
 
 // Sets
 
-- (LGSet *)d83Set11WithOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber // 11 - Beginn einer LV-Gruppe
+- (LGSet *)d83Set11WithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme // 11 - Beginn einer LV-Gruppe
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:11];
-    [set setString:[ordinalNumber stringValue] range:NSMakeRange(2, 9)]; // OZ
+    [set setString:[ordinalNumberScheme d83Data73OfOrdinalNumber:ordinalNumber] range:NSMakeRange(2, 9)]; // OZ
     [set setString:[self d83Data67] range:NSMakeRange(11, 1)]; // LVGRART
     return set;
 }
@@ -92,11 +93,11 @@
     return set;
 }
 
-- (LGSet *)d83Set31WithOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber // 31 - Ende der LV-Gruppe
+- (LGSet *)d83Set31WithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme // 31 - Ende der LV-Gruppe
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:31];
-    [set setString:[ordinalNumber stringValue] range:NSMakeRange(2, 9)]; // OZ
+    [set setString:[ordinalNumberScheme d83Data73OfOrdinalNumber:ordinalNumber] range:NSMakeRange(2, 9)]; // OZ
     return set;
 }
 

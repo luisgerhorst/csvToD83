@@ -20,6 +20,7 @@
 		A06032761865BC85001F92DF /* LGSet.m in Sources */ = {isa = PBXBuildFile; fileRef = A06032751865BC85001F92DF /* LGSet.m */; };
 		A06C6C42185F722400A4B382 /* CHCSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A06C6C41185F722400A4B382 /* CHCSVParser.m */; };
 		A0E3510D18607C5C0003CD2C /* LGOrdinalNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = A0E3510C18607C5C0003CD2C /* LGOrdinalNumber.m */; };
+		A0F44F391896EAD600E3E2B7 /* LGOrdinalNumberScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A0F44F381896EAD600E3E2B7 /* LGOrdinalNumberScheme.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -61,6 +62,8 @@
 		A06C6C41185F722400A4B382 /* CHCSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHCSVParser.m; sourceTree = "<group>"; };
 		A0E3510B18607C5C0003CD2C /* LGOrdinalNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGOrdinalNumber.h; sourceTree = "<group>"; };
 		A0E3510C18607C5C0003CD2C /* LGOrdinalNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGOrdinalNumber.m; sourceTree = "<group>"; };
+		A0F44F371896EAD600E3E2B7 /* LGOrdinalNumberScheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGOrdinalNumberScheme.h; sourceTree = "<group>"; };
+		A0F44F381896EAD600E3E2B7 /* LGOrdinalNumberScheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGOrdinalNumberScheme.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,10 +115,10 @@
 				A01AA3AA185F3FBA0067FA5A /* LGService.m */,
 				A0302FAC18622BBD00AD737E /* LGNode.h */,
 				A0302FAD18622BBD00AD737E /* LGNode.m */,
+				A0E3511118607D0D0003CD2C /* OrdinalNumber */,
 				A023CDC61869AF1E004DF3D9 /* Set */,
 				A05D7B041864875D00D9BD17 /* ServiceType */,
 				A0302FAB186221E700AD737E /* Stack */,
-				A0E3511118607D0D0003CD2C /* OrdinalNumber */,
 				A06C6C43185F74CD00A4B382 /* CSVParser */,
 				A01AA39C185F38920067FA5A /* csvToD83.1 */,
 				A01AA39A185F38920067FA5A /* Supporting Files */,
@@ -170,6 +173,8 @@
 		A0E3511118607D0D0003CD2C /* OrdinalNumber */ = {
 			isa = PBXGroup;
 			children = (
+				A0F44F371896EAD600E3E2B7 /* LGOrdinalNumberScheme.h */,
+				A0F44F381896EAD600E3E2B7 /* LGOrdinalNumberScheme.m */,
 				A0E3510B18607C5C0003CD2C /* LGOrdinalNumber.h */,
 				A0E3510C18607C5C0003CD2C /* LGOrdinalNumber.m */,
 				A023CDC21869AEFB004DF3D9 /* LGMutableOrdinalNumber.h */,
@@ -233,6 +238,7 @@
 				A0E3510D18607C5C0003CD2C /* LGOrdinalNumber.m in Sources */,
 				A0302FAA186221DA00AD737E /* LGStack.m in Sources */,
 				A06032761865BC85001F92DF /* LGSet.m in Sources */,
+				A0F44F391896EAD600E3E2B7 /* LGOrdinalNumberScheme.m in Sources */,
 				A06C6C42185F722400A4B382 /* CHCSVParser.m in Sources */,
 				A0302FAE18622BBD00AD737E /* LGNode.m in Sources */,
 				A05D7B0318647F3900D9BD17 /* LGServiceType.m in Sources */,

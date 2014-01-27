@@ -27,7 +27,8 @@
  */
 
 #import "LGService.h"
-#import "LGMutableOrdinalNumber.h"
+#import "LGOrdinalNumber.h"
+#import "LGOrdinalNumberScheme.h"
 #import "LGSet.h"
 
 @implementation LGService
@@ -91,13 +92,13 @@
 
 // D83
 
-- (NSArray *)d83SetsWithOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber
+- (NSArray *)d83SetsWithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme
 {
     NSMutableArray *sets = [NSMutableArray array];
-    [sets addObject:[self d83Set21WithOrdinalNumber:ordinalNumber]];
+    [sets addObject:[self d83Set21WithOrdinalNumber:ordinalNumber ofScheme:ordinalNumberScheme]];
     [sets addObject:[self d83Set25]];
     
-    // split text by lines, spaces and long words by length
+    // Split text by lines, spaces and long words by length.
     NSUInteger maxLength = 55; // max length of one line
     NSRegularExpression *wordLengthRegExp = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@".{1,%lu}", (unsigned long)maxLength] options:0 error:nil]; // 55 chars
     NSArray *inputLines = [text componentsSeparatedByString:@"\n"];
@@ -125,7 +126,7 @@
         }
     }
     
-    // add to sets
+    // Add chunks to sets.
     for (NSString *chunk in lines) [sets addObject:[self d83Set26WithChunk:chunk]];
     
     /*
@@ -138,12 +139,12 @@
 
 // Sets
 
-- (LGSet *)d83Set21WithOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber
+- (LGSet *)d83Set21WithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:21];
-    [set setString:[ordinalNumber stringValue] range:NSMakeRange(2, 9)]; // OZ
-    [set setString:[type d83Data787980] range:NSMakeRange(11, 3)]; // POSART1 + POSART2 + POSTYP
+    [set setString:[ordinalNumberScheme d83Data73OfOrdinalNumber:ordinalNumber] range:NSMakeRange(2, 9)]; // OZ
+    [set setString:[type d83Data787980] range:NSMakeRange(11,3)]; // POSART1 + POSART2 + POSTYP
     [set setFloat:quantity range:NSMakeRange(23,11) comma:3]; // MENGE
     [set setString:unit range:NSMakeRange(34,4)]; // EINHEIT
     return set;

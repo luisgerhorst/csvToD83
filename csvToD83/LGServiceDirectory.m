@@ -34,6 +34,7 @@
 #import "LGServiceGroup.h"
 #import "LGService.h"
 #import "LGMutableOrdinalNumber.h"
+#import "LGOrdinalNumberScheme.h"
 
 BOOL isEmpty(NSString *string) {
     NSString *trimmed = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -42,10 +43,6 @@ BOOL isEmpty(NSString *string) {
 
 NSString *removeSpaces(NSString *string) {
     return [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-}
-
-NSUInteger digitsCount(NSInteger i) {
-    return i > 0 ? (NSUInteger)log10((double)i) + 1 : 1;
 }
 
 NSString *removeParantheses(NSString *input) {
@@ -75,13 +72,14 @@ NSString *removeParantheses(NSString *input) {
         if ([line count] < 5) @throw [NSException exceptionWithName:@"LGServiceDirectoryInvalidTableStructure" reason:[NSString stringWithFormat:@"Table must have at least 5 collumns, %@ has not", array] userInfo:nil];
         
         
-        LGOrdinalNumber *ordinalNumber = [[LGOrdinalNumber alloc] initWithString:line[0] forGroup:&forGroup]; // nil if no valid string
+        LGOrdinalNumber_Type ordinalNumberType;
+        LGOrdinalNumber *ordinalNumber = [[LGOrdinalNumber alloc] initWithCSVString:line[0] type:&ordinalNumberType];
         
-        // todo: improve detection, save warnings/errors
+        // Todo: Improve detection, save warnings/errors.
         
         // ServiceGroup:
         if (ordinalNumber &&
-            [ordinalNumber forGroup] && // ordinal number of group
+            ordinalNumberType == LGOrdinalNumber_Type_Group && // ordinal number of group
             !isEmpty(line[1])) { // has title
             
             if ([[stack objectOnTop] class] == [LGService class]) [[stack objectOnTop] trimText]; // finished previous service
@@ -95,7 +93,7 @@ NSString *removeParantheses(NSString *input) {
             
         // Service:
         } else if (ordinalNumber &&
-                   ![ordinalNumber forGroup] && // ordinal number of service
+                   ordinalNumberType == LGOrdinalNumber_Type_Service && // ordinal number of service
                    !isEmpty(line[1]) && // has title
                    [line[2] floatValue] > 0 && // quantity > 0
                    !isEmpty(line[3]) && [line[3] length] <= 4) { // has unit with valid length
@@ -193,12 +191,13 @@ NSString *removeParantheses(NSString *input) {
     [sets addObject:[self d83Set02]];
     [sets addObject:[self d83Set03]];
     
-    LGMutableOrdinalNumber *ordinalNumber = [[LGMutableOrdinalNumber alloc] initWithScheme:[self d83Data74]];
+    LGMutableOrdinalNumber *ordinalNumber = [[LGMutableOrdinalNumber alloc] init]; // Internally created array with a zero.
+    LGOrdinalNumberScheme *ordinalNumberScheme = [[LGOrdinalNumberScheme alloc] initWithMaxChildCounts:[self maxChildCounts]];
     
-    // children are top objects in ordinal number
+    // Own children are at the top.
     for (LGNode *child in children) {
         [ordinalNumber next];
-        [sets addObjectsFromArray: [child d83SetsWithOrdinalNumber:ordinalNumber]]; // must leave ordinal number as received after execution
+        [sets addObjectsFromArray:[child d83SetsWithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:ordinalNumberScheme]];
     }
     
     [sets addObject:[self d83Set99]];
@@ -272,35 +271,7 @@ NSString *removeParantheses(NSString *input) {
 
 - (NSString *)d83Data74 // 74 - OZMASKE - Maske zur OZ-Interpretation
 {
-    /* 
-     maxChildCounts rules
-     - the layer befor the layer with 0 if the max number of Service
-     - each layer before the layer with services is a group layer
-     - array of NSNumbers
-     */
-    NSArray *maxChildCounts = [super maxChildCounts]; // of NSNumbers
-    NSMutableString *scheme = [NSMutableString string];
-    NSUInteger groupDepth = 1;
-    
-    // Groups
-    for (NSUInteger i = 0; i < [maxChildCounts count] - 2; i++) {
-        NSUInteger digits = digitsCount([[maxChildCounts objectAtIndex:i] integerValue]);
-        for (NSUInteger i = 0; i < digits; i++) [scheme appendFormat:@"%lu", (unsigned long)groupDepth];
-        groupDepth++;
-    }
-    
-    // Service
-    NSUInteger serviceDigits = digitsCount([[maxChildCounts objectAtIndex:[maxChildCounts count] - 2] integerValue]);
-    for (NSUInteger i = 0; i < serviceDigits; i++) [scheme appendString:@"P"];
-    
-    // Zeros
-    while ([scheme length] < 9) [scheme appendString:@"0"];
-    
-    // Validate
-    if ([scheme length] != 9) @throw [NSException exceptionWithName:@"LGServiceDirectory_d83Date74" reason:@"Resulting data element if too long" userInfo:nil];
-    
-    return scheme;
-    
+    return [[[LGOrdinalNumberScheme alloc] initWithMaxChildCounts:[self maxChildCounts]] d83Data74];
 }
 
 - (NSUInteger)d83Data9 // 9 - ANZTEIL - Anzahl der Teilleistungen im Leistungsverzeichnis

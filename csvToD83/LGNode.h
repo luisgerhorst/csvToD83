@@ -28,18 +28,19 @@
 
 #import <Foundation/Foundation.h>
 
-@class LGMutableOrdinalNumber;
+@class LGOrdinalNumber;
+@class LGOrdinalNumberScheme;
 
 @interface LGNode : NSObject {
     /*
-     * Child rules:
-     * - must be from the same class
-     * - must have the same number of sub-layers
+     Child rules:
+     - same class
+     - same number of sub-layers
      */
     NSMutableArray *children;
 }
 
-// local:
+// Local:
 
 - (id)init;
 - (id)initWithoutChildren;
@@ -47,13 +48,17 @@
 - (void)appendChild:(id)newChild;
 - (BOOL)layersValid;
 
-// recursive:
+// Recursive:
 
 - (NSArray *)maxChildCounts;
 - (NSUInteger)servicesCount; // with end element
 
-// inheritating children must overwrite:
+// Also in protocol:
+- (NSArray *)d83SetsWithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme;
 
-- (NSArray *)d83SetsWithOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber;
+@end
 
+// Inherting classes should conform to this protocol:
+@protocol LGNodeInherting
+- (NSArray *)d83SetsWithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme;
 @end

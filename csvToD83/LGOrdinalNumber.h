@@ -28,18 +28,21 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger, LGOrdinalNumber_Type) { // POSART1
+// For what kind of element was the ordinal number
+typedef NS_ENUM(NSInteger, LGOrdinalNumber_Type) {
     LGOrdinalNumber_Type_Group,
-    LGOrdinalNumber_Type_Service,
-    LGOrdinalNumber_Type_Undefined
+    LGOrdinalNumber_Type_Service
 };
 
-@interface LGOrdinalNumber : NSObject {}
+@interface LGOrdinalNumber : NSObject {
+    @protected
+    NSArray *ordinalNumber;
+}
 
-@property
-
-- (id)initWithString:(NSString *)string;
+- (id)initWithCSVString:(NSString *)string type:(LGOrdinalNumber_Type *)type;
+- (id)initWithOrdinalNumber:(LGOrdinalNumber *)inputOrdinalNumber;
 
 - (NSUInteger)depth;
+- (NSUInteger)numberForPosition:(NSUInteger)position;
 
 @end

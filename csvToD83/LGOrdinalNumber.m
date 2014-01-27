@@ -30,49 +30,69 @@
 
 @implementation LGOrdinalNumber
 
+// Mostly called when using a LGMutableOrdinalNumber, has to be incremented before usage.
 - (id)init
 {
-    @throw [NSException exceptionWithName:@"LGOrdinalNumberInitialization" reason:@"Use initWithString:, not init" userInfo:nil];
-}
-
-- (id)initWithString:(NSString *)string
-{
     self = [super init];
-    
-    // convert
-    NSArray *strings = [string componentsSeparatedByString:@"."];
-    NSMutableArray *numbers = [NSMutableArray array];
-    for (NSString *s in strings) {
-        [numbers addObject:[NSNumber numberWithInteger:(NSUInteger)[s integerValue]]]; // get unsigned int from string and put into array
+    if (self) {
+        ordinalNumber = [NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:0]];
     }
-    
-    // remove group 0
-    forGroup = NO;
-    if ([[numbers objectAtIndex:[numbers count]-1] integerValue] == 0) {
-        [numbers removeLastObject];
-        forGroup = YES;
-    }
-    
-    ordinalNumber = numbers;
-    
-    // validate
-    if ([ordinalNumber count] == 0) return nil;
-    for (NSUInteger i = 0; i < [ordinalNumber count]; i++) {
-        if ([[ordinalNumber objectAtIndex:i] integerValue] > 0) continue; // alle müssen größer 0 sein (group 0 schon entfernt)
-        return nil;
-    }
-    
     return self;
 }
 
-- (BOOL)forGroup
+- (id)initWithCSVString:(NSString *)string type:(LGOrdinalNumber_Type *)type
 {
-    return forGroup;
+    self = [super init];
+    if (self) {
+        
+        // Convert:
+        NSArray *strings = [string componentsSeparatedByString:@"."];
+        NSMutableArray *numbers = [NSMutableArray array];
+        for (NSString *s in strings) {
+            [numbers addObject:[NSNumber numberWithInteger:(NSUInteger)[s integerValue]]]; // get unsigned int from string and put into array
+        }
+        
+        // Set:
+        *type = LGOrdinalNumber_Type_Service;
+        if ([[numbers objectAtIndex:[numbers count]-1] integerValue] == 0) {
+            [numbers removeLastObject];
+            *type = LGOrdinalNumber_Type_Group;
+        }
+        ordinalNumber = numbers;
+        
+        // Validate:
+        if ([ordinalNumber count] == 0) return nil;
+        for (NSUInteger i = 0; i < [ordinalNumber count]; i++) {
+            if ([[ordinalNumber objectAtIndex:i] integerValue] > 0) continue;
+            return nil;
+        }
+        
+    }
+    return self;
+}
+
+- (id)initWithOrdinalNumber:(LGOrdinalNumber *)inputOrdinalNumber
+{
+    self = [super init];
+    if (self) {
+        ordinalNumber = [inputOrdinalNumber arrayValue];
+    }
+    return self;
 }
 
 - (NSUInteger)depth
 {
     return [ordinalNumber count];
+}
+
+- (NSUInteger)numberForPosition:(NSUInteger)position
+{
+    return [[ordinalNumber objectAtIndex:position] unsignedIntegerValue];
+}
+
+- (NSArray *)arrayValue
+{
+    return [NSArray arrayWithArray:ordinalNumber];
 }
 
 @end

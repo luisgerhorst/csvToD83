@@ -120,9 +120,9 @@
  - always make the ordinal number ready for your children, they will directly insert themselves
  - return the ordinal number the same way you got it
  */
-- (NSArray *)d83SetsWithOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber
+- (NSArray *)d83SetsWithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme
 {
-    @throw [NSException exceptionWithName:@"LGNode_d83SetsForOrdinalNumber" reason:@"Every class inheriting from LGNode has to overwrite the method - (NSArray *)d83SetsForOrdinalNumber:(LGMutableOrdinalNumber *)ordinalNumber" userInfo:nil];
+    @throw [NSException exceptionWithName:@"LGNode_d83SetsForOrdinalNumber" reason:@"Every class inheriting from LGNode has to overwrite the method - (NSArray *)d83SetsWithOrdinalNumber:(LGOrdinalNumber *)ordinalNumber ofScheme:(LGOrdinalNumberScheme *)ordinalNumberScheme" userInfo:nil];
 }
 
 @end
