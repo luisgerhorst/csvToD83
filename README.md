@@ -52,9 +52,9 @@ Ordnungszahl | Text | Menge | Einheit | Art
 	* kein Inhalt: Normalposition
 	* BG: Bedarfsposition mit Gesamtbetrag
 	* BE: Bedarfsposition ohne Gesamtbetrag
-	
+
 Alles Felder bis auf den Langtext und die Art müssen immer belegt sein.
-	
+
 ## Quellen
 
 Bei der Implementierung des D83-Formats wurde auf die [Regelungen für den Datenaustausch Leistungsverzeichnis](http://www.gaeb.de/download/da1990.pdf) (2., geänderte Auflage) von Juni 1990 zurückgegriffen.

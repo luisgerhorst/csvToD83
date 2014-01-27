@@ -1,0 +1,2 @@
+- `self` in Konstruktor prüfen
+- `LGOrdinalNumber` and `LGMutableOrdinalNumber` zusammenfassen

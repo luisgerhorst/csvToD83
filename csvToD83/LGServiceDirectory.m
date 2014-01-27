@@ -271,10 +271,11 @@ NSString *removeParantheses(NSString *input) {
 
 - (NSString *)d83Data74 // 74 - OZMASKE - Maske zur OZ-Interpretation
 {
-    /* maxChildCounts rules
-     * - the layer befor the layer with 0 if the max number of Service
-     * - each layer before the layer with services is a group layer
-     * - array of NSNumbers
+    /* 
+     maxChildCounts rules
+     - the layer befor the layer with 0 if the max number of Service
+     - each layer before the layer with services is a group layer
+     - array of NSNumbers
      */
     NSArray *maxChildCounts = [super maxChildCounts]; // of NSNumbers
     NSMutableString *scheme = [NSMutableString string];
