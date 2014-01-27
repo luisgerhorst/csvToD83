@@ -28,13 +28,18 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LGOrdinalNumber : NSObject {
-    NSArray *ordinalNumber;
-    BOOL forGroup;
-}
+typedef NS_ENUM(NSInteger, LGOrdinalNumber_Type) { // POSART1
+    LGOrdinalNumber_Type_Group,
+    LGOrdinalNumber_Type_Service,
+    LGOrdinalNumber_Type_Undefined
+};
+
+@interface LGOrdinalNumber : NSObject {}
+
+@property
 
 - (id)initWithString:(NSString *)string;
-- (BOOL)forGroup;
+
 - (NSUInteger)depth;
 
 @end

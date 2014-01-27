@@ -113,7 +113,6 @@
 				A0302FAC18622BBD00AD737E /* LGNode.h */,
 				A0302FAD18622BBD00AD737E /* LGNode.m */,
 				A023CDC61869AF1E004DF3D9 /* Set */,
-				A023CDC51869AF0E004DF3D9 /* MutableOrdinalNumber */,
 				A05D7B041864875D00D9BD17 /* ServiceType */,
 				A0302FAB186221E700AD737E /* Stack */,
 				A0E3511118607D0D0003CD2C /* OrdinalNumber */,
@@ -130,15 +129,6 @@
 				A01AA39B185F38920067FA5A /* csvToD83-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		A023CDC51869AF0E004DF3D9 /* MutableOrdinalNumber */ = {
-			isa = PBXGroup;
-			children = (
-				A023CDC21869AEFB004DF3D9 /* LGMutableOrdinalNumber.h */,
-				A023CDC31869AEFB004DF3D9 /* LGMutableOrdinalNumber.m */,
-			);
-			name = MutableOrdinalNumber;
 			sourceTree = "<group>";
 		};
 		A023CDC61869AF1E004DF3D9 /* Set */ = {
@@ -182,6 +172,8 @@
 			children = (
 				A0E3510B18607C5C0003CD2C /* LGOrdinalNumber.h */,
 				A0E3510C18607C5C0003CD2C /* LGOrdinalNumber.m */,
+				A023CDC21869AEFB004DF3D9 /* LGMutableOrdinalNumber.h */,
+				A023CDC31869AEFB004DF3D9 /* LGMutableOrdinalNumber.m */,
 			);
 			name = OrdinalNumber;
 			sourceTree = "<group>";

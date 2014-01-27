@@ -74,7 +74,8 @@ NSString *removeParantheses(NSString *input) {
         
         if ([line count] < 5) @throw [NSException exceptionWithName:@"LGServiceDirectoryInvalidTableStructure" reason:[NSString stringWithFormat:@"Table must have at least 5 collumns, %@ has not", array] userInfo:nil];
         
-        LGOrdinalNumber *ordinalNumber = [[LGOrdinalNumber alloc] initWithString:line[0]]; // nil if no valid string
+        
+        LGOrdinalNumber *ordinalNumber = [[LGOrdinalNumber alloc] initWithString:line[0] forGroup:&forGroup]; // nil if no valid string
         
         // todo: improve detection, save warnings/errors
         
