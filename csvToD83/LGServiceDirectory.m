@@ -27,7 +27,6 @@
  */
 
 #import "LGServiceDirectory.h"
-#import "CHCSVParser.h"
 #import "LGOrdinalNumber.h"
 #import "LGStack.h"
 #import "LGSet.h"
@@ -35,6 +34,7 @@
 #import "LGService.h"
 #import "LGMutableOrdinalNumber.h"
 #import "LGOrdinalNumberScheme.h"
+#import "NSArray+LGCSVParser.h"
 
 BOOL isEmpty(NSString *string) {
     NSString *trimmed = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -45,46 +45,38 @@ NSString *removeSpaces(NSString *string) {
     return [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
 
-NSString *removeParantheses(NSString *input) {
-    if ([input length] > 2 && [input characterAtIndex:0] == '"' && [input characterAtIndex:[input length]-1] == '"') return [input substringWithRange:NSMakeRange(1, [input length]-2)];
-    return input;
-}
-
 @implementation LGServiceDirectory
 
 /*
  * Reads a csv with a specific structure and return a object structure
  */
-+ (LGServiceDirectory *)serviceDirectoryWithContentsOfCSVFile:(NSString *)csvFilePath
++ (LGServiceDirectory *)serviceDirectoryWithCSVString:(NSString *)csvString
 {
+    
+    NSArray *array = [NSArray arrayWithCSVString:csvString];
     
     LGServiceDirectory *serviceDirectory = [[LGServiceDirectory alloc] init];
     
-    NSArray *array = [NSArray arrayWithContentsOfCSVFile:csvFilePath];
-    
-    LGStack *stack = [[LGStack alloc] init]; // stack that contains current parent of each node layer
+    LGStack *stack = [[LGStack alloc] init]; // Stack that contains current parent of each node layer.
     [stack push:serviceDirectory];
-    
-    // remove parantheses from strings with commas
     
     for (NSArray *line in array) {
         
-        if ([line count] < 5) @throw [NSException exceptionWithName:@"LGServiceDirectoryInvalidTableStructure" reason:[NSString stringWithFormat:@"Table must have at least 5 collumns, %@ has not", array] userInfo:nil];
-        
+        if ([line count] < 5) @throw [NSException exceptionWithName:@"LGServiceDirectoryInvalidTableStructure" reason:[NSString stringWithFormat:@"Invalid array. Table must have at least 5 collumns."] userInfo:nil];
         
         LGOrdinalNumber_Type ordinalNumberType;
         LGOrdinalNumber *ordinalNumber = [[LGOrdinalNumber alloc] initWithCSVString:line[0] type:&ordinalNumberType];
         
         // Todo: Improve detection, save warnings/errors.
         
-        // ServiceGroup:
+        // Service Group:
         if (ordinalNumber &&
-            ordinalNumberType == LGOrdinalNumber_Type_Group && // ordinal number of group
-            !isEmpty(line[1])) { // has title
+            ordinalNumberType == LGOrdinalNumber_Type_Group &&
+            !isEmpty(line[1])) { // Has a title.
             
-            if ([[stack objectOnTop] class] == [LGService class]) [[stack objectOnTop] trimText]; // finished previous service
+            if ([[stack objectOnTop] class] == [LGService class]) [[stack objectOnTop] trimText]; // Finished previous service.
             
-            LGServiceGroup *group = [[LGServiceGroup alloc] initWithTitle:removeParantheses(line[1])];
+            LGServiceGroup *group = [[LGServiceGroup alloc] initWithTitle:line[1]];
             
             NSUInteger toPop = [stack heigth] - [ordinalNumber depth];
             [stack pop:toPop];
@@ -93,14 +85,14 @@ NSString *removeParantheses(NSString *input) {
             
         // Service:
         } else if (ordinalNumber &&
-                   ordinalNumberType == LGOrdinalNumber_Type_Service && // ordinal number of service
-                   !isEmpty(line[1]) && // has title
-                   [line[2] floatValue] > 0 && // quantity > 0
-                   !isEmpty(line[3]) && [line[3] length] <= 4) { // has unit with valid length
+                   ordinalNumberType == LGOrdinalNumber_Type_Service && // Ordinal number of a service.
+                   !isEmpty(line[1]) && // Has title.
+                   [line[2] floatValue] > 0 && // Quantity > 0
+                   !isEmpty(line[3]) && [line[3] length] <= 4) { // Has unit with valid length.
             
             if ([[stack objectOnTop] class] == [LGService class]) [[stack objectOnTop] trimText]; // finished previous service
             
-            LGService *service = [[LGService alloc] initWithTitle:removeParantheses(line[1]) ofQuantity:[line[2] floatValue] inUnit:line[3] withCSVTypeString:line[4]];
+            LGService *service = [[LGService alloc] initWithTitle:line[1] ofQuantity:[line[2] floatValue] inUnit:line[3] withCSVTypeString:line[4]];
             
             NSUInteger toPop = [stack heigth] - [ordinalNumber depth]; // maybe you have to pop another service first
             [stack pop:toPop];
@@ -110,7 +102,7 @@ NSString *removeParantheses(NSString *input) {
         // Service Text Chunk:
         } else if ([[stack objectOnTop] class] == [LGService class]) { // parent is service
             
-            [[stack objectOnTop] appendTextChunk:removeParantheses(line[1])];
+            [[stack objectOnTop] appendTextChunk:line[1]];
         
         }
         
@@ -157,15 +149,7 @@ NSString *removeParantheses(NSString *input) {
 
 // D83
 
-- (BOOL)writeToD83File:(NSString *)d83FilePath error:(NSError *__autoreleasing *)error
-{
-    NSString *string = [self d83Value];
-    BOOL writeSuccess = [string writeToFile:d83FilePath atomically:NO encoding:NSUTF8StringEncoding error:error];
-    if (!writeSuccess) return NO;
-    return YES;
-}
-
-- (NSString *)d83Value
+- (NSString *)d83String
 {
     
     NSArray *sets = [self d83Sets];
@@ -223,9 +207,7 @@ NSString *removeParantheses(NSString *input) {
     LGSet *set = [[LGSet alloc] init];
     [set setType:01];
     
-    // todo: cut description to avoid error
-    
-    [set setString:description range:NSMakeRange(2,40)]; // LVBEZ
+    [set setCutString:description range:NSMakeRange(2,40)]; // LVBEZ
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"dd.MM.YY"];
@@ -240,8 +222,7 @@ NSString *removeParantheses(NSString *input) {
     LGSet *set = [[LGSet alloc] init];
     [set setType:02];
     
-    // todo: cut project to avoid error
-    [set setString:project range:NSMakeRange(2,60)]; // PROBEZ
+    [set setCutString:project range:NSMakeRange(2,60)]; // PROBEZ
     
     return set;
 }
@@ -250,10 +231,7 @@ NSString *removeParantheses(NSString *input) {
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:03];
-    
-    // todo: cut client to avoid error
-    [set setString:client range:NSMakeRange(2,60)]; // AGBEZ
-    
+    [set setCutString:client range:NSMakeRange(2,60)]; // AGBEZ
     return set;
 }
 

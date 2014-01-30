@@ -28,7 +28,7 @@
 
 #import <Foundation/Foundation.h>
 #import "LGServiceDirectory.h"
-#import "LGMutableOrdinalNumber.h"
+// #import "LGMutableOrdinalNumber.h"
 #include <stdio.h>
 
 NSString *LGRead(NSString *question, const int length) {
@@ -52,22 +52,28 @@ int main(int argc, const char *argv[]) {
             return 1;
         }
         
-        // read from ...
+        // Read from ...
         NSString *csvPath = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
         if ([csvPath length] < 5 || ![[csvPath substringWithRange:NSMakeRange([csvPath length] - 4, 4)] isCaseInsensitiveLike:@".csv"]) csvPath = [csvPath stringByAppendingString:@".csv"]; // add extension if needed
         
         LGWrite([NSString stringWithFormat:@"CSV Datei %@ wird eingelesen ...", csvPath]);
         
-        LGServiceDirectory *sd = [LGServiceDirectory serviceDirectoryWithContentsOfCSVFile:csvPath];
+        NSError *readFileError;
+        NSString *csvString = [NSString stringWithContentsOfFile:csvPath encoding:NSUTF8StringEncoding error:&readFileError];
+        if (!csvString) {
+            LGWrite(@""); NSLog(@"%@\n\nFehler beim lesen der Datei!", readFileError);
+            return 1;
+        }
+        LGServiceDirectory *sd = [LGServiceDirectory serviceDirectoryWithCSVString:csvString];
         LGWrite(@"Datei erfolgreich eingelesen, im Folgenden können Sie das LV mit weiteren Informationen ergänzen.");
         
-        // modify:
+        // Modify:
         [sd setClient:LGRead(@"Auftraggeber", 60)];
         [sd setProject:LGRead(@"Projekt", 60)];
         [sd setDescription:LGRead(@"Titel des Leistungsverzeichnisses", 40)];
         [sd setDate:[NSDate date]];
         
-        // save to ...
+        // Save to ...
         NSMutableString *d83Path = [NSMutableString stringWithString:csvPath];
         [d83Path replaceCharactersInRange:NSMakeRange([d83Path length] - 4, 4) withString:@".d83"]; // change file extension by replacing last 4 chars by ".d83"
         NSMutableString *inputD83Path = [NSMutableString stringWithString:LGRead([NSString stringWithFormat:@"Name der D83 Datei [%@]", d83Path], 64)];
@@ -76,10 +82,13 @@ int main(int argc, const char *argv[]) {
             d83Path = inputD83Path; // change path to input
         }
         
-        // save:
+        // Save:
         LGWrite([NSString stringWithFormat:@"Datei wird im D83-Format unter %@ gespeichert ...", d83Path]);
-        NSError *error;
-        if (![sd writeToD83File:d83Path error:&error]) NSLog(@"Fehler beim speichern als D83 Datei: %@", error); // write
+        NSError *saveFileError;
+        if (![[sd d83String] writeToFile:d83Path atomically:NO encoding:NSASCIIStringEncoding error:&saveFileError]) {
+            LGWrite(@""); NSLog(@"%@\n\nFehler beim speichern der D83 Datei!", saveFileError);
+            return 1;
+        }
         LGWrite(@"Datei wurde erfolgreich gespeichert.");
         
     }

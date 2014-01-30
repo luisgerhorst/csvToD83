@@ -45,12 +45,7 @@
     [self setInteger:aInt range:NSMakeRange(0, 2)];
 }
 
-// setter:
-
-/*
- * aString: String with length <= range.length to be inserted into the set (line)
- */
-- (void)setString:(NSString *)s range:(NSRange)range // nicht-numerisch, werden mit lehrzeichen aufgefüllt
+- (void)setString:(NSString *)s range:(NSRange)range // Nicht-numerisch, werden mit Lehrzeichen aufgefüllt. String muss kürzer als range.length sein.
 {
     NSData *ASCIIData = [s dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
     NSString *ASCIIString = [[NSString alloc] initWithData:ASCIIData encoding:NSASCIIStringEncoding];
@@ -59,7 +54,7 @@
     [string replaceCharactersInRange:range withString:ASCIIString];
 }
 
-- (void)setInteger:(NSUInteger)number range:(NSRange)range // Numerisch, werden mit Nullen vor zahl aufgefüllt
+- (void)setInteger:(NSUInteger)number range:(NSRange)range // Numerisch, werden mit Nullen vor Zahl aufgefüllt.
 {
     NSString *s = [NSString stringWithFormat:@"%lu", (unsigned long)number];
     while ([s length] < range.length) s = [NSString stringWithFormat:@"0%@", s];
@@ -77,17 +72,19 @@
     [decimalStringFormat appendFormat:@"%lu", (long unsigned)comma];
     [decimalStringFormat appendString:@"f"];
     NSString *decimalFullString = [[NSString alloc] initWithFormat:decimalStringFormat, decimalNumber];
-    NSString *decimalString = [decimalFullString substringFromIndex:2]; // has right length
+    NSString *decimalString = [decimalFullString substringFromIndex:2]; // Has right length.
     
     [self setInteger:integerNumber range:NSMakeRange(range.location, range.length - comma)];
     [self setString:decimalString range:NSMakeRange(range.location + (range.length - comma), comma)];
 }
 
-// getter:
+- (void)setCutString:(NSString *)s range:(NSRange)range
+{
+    NSString *cutString = s;
+    if ([s length] > range.length) cutString = [s substringToIndex:range.length];
+    [self setString:cutString range:range];
+}
 
-/*
- * returns full line with set number 'number'
- */
 - (NSString *)stringForSetNumber:(NSUInteger)number
 {
     

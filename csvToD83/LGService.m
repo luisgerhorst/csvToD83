@@ -69,7 +69,7 @@
     NSRegularExpression *whitespacesEnd = [NSRegularExpression regularExpressionWithPattern:@"[ \t]+$" options:0 error:nil];
     text = [NSMutableString stringWithString:[whitespacesEnd stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@""]];
     
-    // removew newlines from beginning
+    // remove newlines from beginning
     NSRegularExpression *newlinesAtStart = [NSRegularExpression regularExpressionWithPattern:@"^+[\n]" options:0 error:nil];
     text = [NSMutableString stringWithString:[newlinesAtStart stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@""]];
     
@@ -154,7 +154,7 @@
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:25];
-    [set setString:title range:NSMakeRange(2, 70)]; // KURZTEXT todo: cut to avoid error
+    [set setCutString:title range:NSMakeRange(2, 70)]; // KURZTEXT
     return set;
 }
 
@@ -162,7 +162,7 @@
 {
     LGSet *set = [[LGSet alloc] init];
     [set setType:26];
-    [set setString:chunk range:NSMakeRange(5, 55)]; // LANGTEXT todo: cut to avoid errorå
+    [set setString:chunk range:NSMakeRange(5, 55)]; // LANGTEXT
     return set;
 }
 

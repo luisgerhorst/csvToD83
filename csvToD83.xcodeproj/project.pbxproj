@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A014782518980A1300CAC2B1 /* NSArray+LGCSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A014782418980A1300CAC2B1 /* NSArray+LGCSVParser.m */; };
 		A01AA396185F38920067FA5A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A01AA395185F38920067FA5A /* Foundation.framework */; };
 		A01AA399185F38920067FA5A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A01AA398185F38920067FA5A /* main.m */; };
 		A01AA39D185F38920067FA5A /* csvToD83.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = A01AA39C185F38920067FA5A /* csvToD83.1 */; };
@@ -18,7 +19,6 @@
 		A0302FAE18622BBD00AD737E /* LGNode.m in Sources */ = {isa = PBXBuildFile; fileRef = A0302FAD18622BBD00AD737E /* LGNode.m */; };
 		A05D7B0318647F3900D9BD17 /* LGServiceType.m in Sources */ = {isa = PBXBuildFile; fileRef = A05D7B0218647F3900D9BD17 /* LGServiceType.m */; };
 		A06032761865BC85001F92DF /* LGSet.m in Sources */ = {isa = PBXBuildFile; fileRef = A06032751865BC85001F92DF /* LGSet.m */; };
-		A06C6C42185F722400A4B382 /* CHCSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A06C6C41185F722400A4B382 /* CHCSVParser.m */; };
 		A0E3510D18607C5C0003CD2C /* LGOrdinalNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = A0E3510C18607C5C0003CD2C /* LGOrdinalNumber.m */; };
 		A0F44F391896EAD600E3E2B7 /* LGOrdinalNumberScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A0F44F381896EAD600E3E2B7 /* LGOrdinalNumberScheme.m */; };
 /* End PBXBuildFile section */
@@ -37,6 +37,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A014782318980A1300CAC2B1 /* NSArray+LGCSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+LGCSVParser.h"; sourceTree = "<group>"; };
+		A014782418980A1300CAC2B1 /* NSArray+LGCSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+LGCSVParser.m"; sourceTree = "<group>"; };
 		A01AA392185F38920067FA5A /* csvToD83 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = csvToD83; sourceTree = BUILT_PRODUCTS_DIR; };
 		A01AA395185F38920067FA5A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A01AA398185F38920067FA5A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -58,8 +60,6 @@
 		A05D7B0218647F3900D9BD17 /* LGServiceType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGServiceType.m; sourceTree = "<group>"; };
 		A06032741865BC85001F92DF /* LGSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGSet.h; sourceTree = "<group>"; };
 		A06032751865BC85001F92DF /* LGSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGSet.m; sourceTree = "<group>"; };
-		A06C6C40185F721A00A4B382 /* CHCSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHCSVParser.h; sourceTree = "<group>"; };
-		A06C6C41185F722400A4B382 /* CHCSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHCSVParser.m; sourceTree = "<group>"; };
 		A0E3510B18607C5C0003CD2C /* LGOrdinalNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGOrdinalNumber.h; sourceTree = "<group>"; };
 		A0E3510C18607C5C0003CD2C /* LGOrdinalNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGOrdinalNumber.m; sourceTree = "<group>"; };
 		A0F44F371896EAD600E3E2B7 /* LGOrdinalNumberScheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGOrdinalNumberScheme.h; sourceTree = "<group>"; };
@@ -164,8 +164,8 @@
 		A06C6C43185F74CD00A4B382 /* CSVParser */ = {
 			isa = PBXGroup;
 			children = (
-				A06C6C40185F721A00A4B382 /* CHCSVParser.h */,
-				A06C6C41185F722400A4B382 /* CHCSVParser.m */,
+				A014782318980A1300CAC2B1 /* NSArray+LGCSVParser.h */,
+				A014782418980A1300CAC2B1 /* NSArray+LGCSVParser.m */,
 			);
 			name = CSVParser;
 			sourceTree = "<group>";
@@ -236,10 +236,10 @@
 			files = (
 				A01AA399185F38920067FA5A /* main.m in Sources */,
 				A0E3510D18607C5C0003CD2C /* LGOrdinalNumber.m in Sources */,
+				A014782518980A1300CAC2B1 /* NSArray+LGCSVParser.m in Sources */,
 				A0302FAA186221DA00AD737E /* LGStack.m in Sources */,
 				A06032761865BC85001F92DF /* LGSet.m in Sources */,
 				A0F44F391896EAD600E3E2B7 /* LGOrdinalNumberScheme.m in Sources */,
-				A06C6C42185F722400A4B382 /* CHCSVParser.m in Sources */,
 				A0302FAE18622BBD00AD737E /* LGNode.m in Sources */,
 				A05D7B0318647F3900D9BD17 /* LGServiceType.m in Sources */,
 				A01AA3AB185F3FBA0067FA5A /* LGService.m in Sources */,

@@ -44,13 +44,13 @@
     
 }
 
-+ (instancetype)serviceDirectoryWithContentsOfCSVFile:(NSString *)csvFilePath;
++ (LGServiceDirectory *)serviceDirectoryWithCSVString:(NSString *)csvString;
 
 - (void)setProject:(NSString *)aProjectTitle;
 - (void)setDescription:(NSString *)aServiceDirectoryDescription;
 - (void)setClient:(NSString *)aClientName;
 - (void)setDate:(NSDate *)aDate;
 
-- (BOOL)writeToD83File:(NSString *)d83FilePath error:(NSError *__autoreleasing *)error;
+- (NSString *)d83String;
 
 @end
