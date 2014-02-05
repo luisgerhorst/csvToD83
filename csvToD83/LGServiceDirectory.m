@@ -118,10 +118,12 @@ NSString *removeSpaces(NSString *string) {
 - (id)init
 {
     self = [super init];
-    client = @"";
-    project = @"";
-    description = @"";
-    date = [NSDate date];
+    if (self) {
+        client = @"";
+        project = @"";
+        description = @"";
+        date = [NSDate date];
+    }
     return self;
 }
 

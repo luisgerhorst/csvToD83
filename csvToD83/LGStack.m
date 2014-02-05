@@ -33,7 +33,9 @@
 - (id)init
 {
     self = [super init];
-    stack = [NSMutableArray array];
+    if (self) {
+        stack = [NSMutableArray array];
+    }
     return self;
 }
 

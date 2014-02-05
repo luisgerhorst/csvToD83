@@ -42,23 +42,25 @@
 - (id)initWithCSVString:(NSString *)kind2String forServiceWithUnit:(NSString *)unit
 {
     self = [super init];
-    
-    // For enums see LGServiceType.h
-    
-    BOOL kind1IsS = [unit isEqualToString:@"h"];
-    if (kind1IsS) kind1 = LGServiceType_KIND1_S; // measured in hours
-    else kind1 = LGServiceType_KIND1_N;
-    
-    // todo: maybe remove whitespaces before compare
-    // if kind1 is S kind2 must be N
-    if ([kind2String isEqualToString:@"BE"]) kind2 = LGServiceType_KIND2_E;
-    else if ([kind2String isEqualToString:@"BG"]) kind2 = LGServiceType_KIND2_M;
-    else kind2 = LGServiceType_KIND2_N;
-    
-    type = LGServiceType_TYPE_N;
-    
-    if (![self valid]) @throw [NSException exceptionWithName:@"LGServiceTypeInitialization" reason:@"The resulting combination of POSART1, POSART2 and POSTYP is invalid" userInfo:nil];
-    
+    if (self) {
+        
+        // For enums see LGServiceType.h
+        
+        BOOL kind1IsS = [unit isEqualToString:@"h"];
+        if (kind1IsS) kind1 = LGServiceType_KIND1_S; // measured in hours
+        else kind1 = LGServiceType_KIND1_N;
+        
+        // todo: maybe remove whitespaces before compare
+        // if kind1 is S kind2 must be N
+        if ([kind2String isEqualToString:@"BE"]) kind2 = LGServiceType_KIND2_E;
+        else if ([kind2String isEqualToString:@"BG"]) kind2 = LGServiceType_KIND2_M;
+        else kind2 = LGServiceType_KIND2_N;
+        
+        type = LGServiceType_TYPE_N;
+        
+        if (![self valid]) @throw [NSException exceptionWithName:@"LGServiceTypeInitialization" reason:@"The resulting combination of POSART1, POSART2 and POSTYP is invalid" userInfo:nil];
+        
+    }
     return self;
 }
 

@@ -35,7 +35,9 @@
 - (id)init
 {
     self = [super init];
-    children = [NSMutableArray array];
+    if (self) {
+        children = [NSMutableArray array];
+    }
     return self;
 }
 

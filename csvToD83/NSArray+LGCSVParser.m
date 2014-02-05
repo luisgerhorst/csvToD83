@@ -23,7 +23,7 @@ unichar detectDelimiter(NSString const *csvString) {
     NSArray const *lines = [csvString componentsSeparatedByString:@"\n"];
     
     NSInteger delimitersFieldCounts[] = {-1, -1, -1, -1, -1}; // Is -1 if field count wasn't the same in each line, if count was the same -> contains field count. Same order as in unichar delimiters array.
-    unichar delimiters[] = {comma, semicolon, colon, tab, space}; // Sorted by importance. You can modify this but make sure you also change delimitersFieldCounts (same length as delimiters, filled with -1) and delimitersCount (length of delimiters and delimitersFieldCounts).
+    unichar delimiters[] = {semicolon, comma, colon, tab, space}; // Sorted by importance. You can modify this but make sure you also change delimitersFieldCounts (same length as delimiters, filled with -1) and delimitersCount (length of delimiters and delimitersFieldCounts). I'm in Germany so I make the semicolon the first.
     NSUInteger delimitersCount = 5;
     
     for (NSUInteger i = 0; i < delimitersCount; i++) {

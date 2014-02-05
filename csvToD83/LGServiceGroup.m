@@ -41,8 +41,10 @@
 - (id)initWithTitle:(NSString *)string
 {
     self = [super init];
-    title = string;
-    type = LGServiceGroup_TYPE_N;
+    if (self) {
+        title = string;
+        type = LGServiceGroup_TYPE_N;
+    }
     return self;
 }
 

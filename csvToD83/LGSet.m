@@ -33,8 +33,10 @@
 - (id)init
 {
     self = [super init];
-    string = [NSMutableString string];
-    for (int i = 0; i < 74; i++) [string appendString:@" "];
+    if (self) {
+        string = [NSMutableString string];
+        for (int i = 0; i < 74; i++) [string appendString:@" "];
+    }
     return self;
 }
 

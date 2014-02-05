@@ -1,1 +1,0 @@
-- `self` in Konstruktor prüfen

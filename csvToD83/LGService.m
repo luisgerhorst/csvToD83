@@ -41,11 +41,13 @@
 - (id)initWithTitle:(NSString *)aTitle ofQuantity:(float)aQuantity inUnit:(NSString *)aUnit withCSVTypeString:(NSString *)typeString
 {
     self = [super initWithoutChildren];
-    title = aTitle;
-    quantity = aQuantity;
-    unit = aUnit;
-    type = [[LGServiceType alloc] initWithCSVString:typeString forServiceWithUnit:aUnit];
-    text = [NSMutableString string];
+    if (self) {
+        title = aTitle;
+        quantity = aQuantity;
+        unit = aUnit;
+        type = [[LGServiceType alloc] initWithCSVString:typeString forServiceWithUnit:aUnit];
+        text = [NSMutableString string];
+    }
     return self;
 }
 
